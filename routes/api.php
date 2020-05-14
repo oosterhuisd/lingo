@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 //Route::group(['middleware'=>['auth:api']], function() {
 Route::group([], function() {
     Route::get('/lingo/getWord/{wordLength}', 'Api\LingoController@getWord');
-    Route::post('/lingo/validate/{wordId}', 'Api\LingoController@validateWord');
+    Route::post('/lingo/validate', 'Api\LingoController@validateWord');
 
     Route::get('/puzzle/getWord/{wordLength}', 'Api\PuzzleController@getWord');
-    Route::post('/puzzle/validate/{wordId}', 'Api\PuzzleController@validateWord');
+    Route::post('/puzzle/validate', 'Api\PuzzleController@validateWord');
 });

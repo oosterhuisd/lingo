@@ -17,7 +17,7 @@ class LingoController extends Controller
         ];
     }
 
-    public function validateWord(Request $request, $wordId) {
+    public function validateWord(Request $request) {
         return response()->json([
             'correct' => [1,2],
             'contains' => [3,4]
