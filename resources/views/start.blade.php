@@ -19,7 +19,7 @@
             </nav>
         </div>
         <div id="app">
-            <game-interface></game-interface>
+            <game-controller></game-controller>
         </div>
         <script src="{{ mix('/js/app.js') }}"></script>
     </body>
