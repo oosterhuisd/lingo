@@ -18,8 +18,11 @@
 
 <script>
     import Puzzle from "../data/Puzzle";
+    import keyEventsMixin from "../mixins/keyEventsMixin";
 
     export default {
+        mixins: [keyEventsMixin],
+
         props: {
             puzzleInstance: {
                 type: Puzzle,
