@@ -39,7 +39,8 @@
         },
         data() {
             return {
-                nextGuess: ''
+                nextGuess: '',
+                hasTyped: false
             }
         },
         computed: {
@@ -63,14 +64,20 @@
                 }
             },
             submit: function () {
-                let game = this;
+                let instance = this;
                 this.game.verify(axios, this.nextGuess).then(function() {
-                    game.nextGuess = game.game.getHint();
+                    instance.nextGuess = instance.game.getHint();
                 }).catch(function(e) {
-                    game.invalidWord();
+                    instance.invalidWord();
+                }).then(()=>{
+                    instance.hasTyped = false;
                 });
             },
             input: function (letter) {
+                if (!this.hasTyped) {
+                    this.nextGuess = '';
+                    this.hasTyped = true;
+                }
                 if (this.nextGuess.length < this.game.wordLength) {
                     this.nextGuess += letter;
                 } else {
