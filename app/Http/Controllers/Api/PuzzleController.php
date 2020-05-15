@@ -11,7 +11,8 @@ class PuzzleController extends Controller
         return [
             'id' => 1,
             'length' => $wordLength,
-            'firstLetter' => 'A',
+            'letters' => 'ABCDEFGHIJKL',
+            'strategy' => 'reverse' // in what order should drawn letters be filled?
         ];
     }
 
@@ -25,5 +26,16 @@ class PuzzleController extends Controller
 //            'correct' => [1,2],
 //            'contains' => [3,4]
 //        ])->status(400);
+    }
+
+    public function getPositions(Request $request) {
+        $wordId = $request->input('id');
+        $letters = $request->input('letters');
+        return response()->json([
+            'positions' => [
+                0 => 'A',
+                1 => 'B'
+            ]
+         ]);
     }
 }

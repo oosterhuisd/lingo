@@ -24,15 +24,15 @@
         mixins: [keyEventsMixin],
 
         props: {
-            puzzleInstance: {
+            game: {
                 type: Puzzle,
                 required: true
             }
         },
         methods: {
-            greenBall() {
+            drawLetter() {
 
-            }
+            },
         },
         mounted() {
             console.log('Component mounted.')

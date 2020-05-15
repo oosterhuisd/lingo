@@ -11,6 +11,8 @@
 </template>
 
 <script>
+    import Message from "../data/Message";
+
     export default {
         props: {
             name: {
@@ -43,7 +45,7 @@
             }
         },
         mounted() {
-            console.log(this.name + ' initiated')
+            Message.push(this.name + ' initiated')
         }
     }
 </script>

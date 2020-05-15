@@ -22,7 +22,6 @@
             <div class="col-md-2">
                 <team :name="'Team 2'" :data="team2" :isPlaying="activeTeam == team2"></team>
             </div>
-
         </div>
     </div>
 </template>
@@ -36,6 +35,7 @@
     import './LingoBoard';
     import './PuzzleWord';
     import './BingoCard';
+    import Message from "../data/Message";
 
     export default {
         data() {
@@ -47,11 +47,13 @@
                 puzzle1: null,
                 puzzle2: null,
                 team1: {
+                    name: 'Team 1',
                     player1: 'p1',
                     player2: 'p2',
                     score: 0
                 },
                 team2: {
+                    name: 'Team 2',
                     player1: 'p3',
                     player2: 'p4',
                     score: 0
@@ -75,11 +77,18 @@
             switchActiveTeam() {
                 this.activeTeam = (this.activeTeam == this.team1) ? this.team2 : this.team1;
             },
+            newLingoGame() {
+                this.loading = true;
+                Lingo.newGame(axios, this.wordLength).then(game => {
+                    this.lingoGame = game;
+                    this.loading = false;
+                });
+            },
             lingoWordGuessed() {
-                console.log("Word was guessed by " + this.activeTeam)
+                Message.push("Word was guessed by " + this.activeTeam.name)
                 this.activeTeam.score += 25;
                 this.gamePhase = 'puzzle';
-                this.lingoGame = Lingo.newWord(axios, this.wordLength);
+                this.newLingoGame();
             },
             lingoWordInvalid() {
                 this.switchActiveTeam();
@@ -88,11 +97,11 @@
                 this.activeTeam.score += 100;
                 this.switchActiveTeam();
                 this.gamePhase = 'lingo';
-                console.log("Word was guessed by " + this.activeTeam)
+                Message.push("Puzzle word was guessed by " + this.activeTeam.name)
             },
             puzzleWordNotGuessed() {
                 this.gamePhase = 'lingo';
-                console.log("Word was not guessed by " + this.activeTeam)
+                Message.push("Puzzle word was not guessed by " + this.activeTeam)
             },
             getActiveGame() {
                 if (this.gamePhase == 'lingo') {
@@ -132,23 +141,21 @@
                     if (evt.ctrlKey) { // allow [CTRL + *] for easy dev page refresh
                         return true;
                     }
-                    console.log("Ignoring keystroke " + evt.keyCode);
+                    Message.push("Ignoring keystroke " + evt.keyCode);
                     return false; // ignore all other keystrokes
                 };
             }
         },
-        mounted() {
+        async mounted() {
             this.activeTeam = this.team1;
             this.gamePhase = 'lingo';
-            Lingo.newGame(axios, this.wordLength).then(game => {
-                this.lingoGame = game;
-                this.loading = false;
-            });
-            // this.lingoGame = new Lingo(axios, this.wordLength);
 
-            this.puzzle1 = new Puzzle(axios, 11);
-            this.puzzle2 = new Puzzle(axios, 11);
+            this.loading = true;
+            this.lingoGame = await Lingo.newGame(axios, this.wordLength);
+            this.puzzle1 = await Puzzle.newGame(axios, 11);
+            this.puzzle2 = await Puzzle.newGame(axios, 11);
 
+            this.loading = false;
             this.getUserInput();
         }
     }

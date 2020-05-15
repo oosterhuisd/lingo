@@ -1,8 +1,13 @@
 class Puzzle {
 
-    constructor(axios, wordLength) {
-        this.wordLength = wordLength;
-        this.init(axios, wordLength);
+    constructor(props) {
+        this.id = props.id;
+        this.wordLength = props.length;
+        this.inPlace = props.firstLetter;
+        this.letters = props.letters;
+        this.guesses = [];
+        this.completed = false;
+        this.lastResult = {};
     }
 
     async verify(axios, word) {
@@ -12,8 +17,16 @@ class Puzzle {
         });
     }
 
-    static newWord(axios, wordLength) {
-        return new Lingo(axios, wordLength);
+    async getNextLetter(axios) {
+        return axios.post('/api/puzzle/validate', {
+            id: this.id,
+            currentLetters: this.inPlace
+        });
+    }
+
+    static async newGame(axios, wordLength) {
+        const response = await axios.get(`/api/puzzle/getWord/` + wordLength);
+        return new Puzzle(response.data);
     }
 
     async init(axios, wordLength) {

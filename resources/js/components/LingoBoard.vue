@@ -28,6 +28,7 @@
 <script>
     import Lingo from "../data/Lingo";
     import keyEventsMixin from "../mixins/keyEventsMixin";
+    import Message from "../data/Message";
 
     export default {
         mixins: [keyEventsMixin],
@@ -58,20 +59,22 @@
             undo: function () {
                 if (this.game.guesses.length > 1) {
                     this.game.guesses.pop();
-                    console.log("Undid last action");
+                    Message.push("Undid last action");
                 } else {
-                    console.log("Nothing to undo");
+                    Message.push("Nothing to undo");
                 }
             },
-            submit: function () {
-                let instance = this;
-                this.game.verify(axios, this.nextGuess).then(function() {
-                    instance.nextGuess = instance.game.getHint();
-                }).catch(function(e) {
-                    instance.invalidWord();
-                }).then(()=>{
-                    instance.hasTyped = false;
-                });
+            submit: async function () {
+                await this.game.verify(axios, this.nextGuess);
+                if (this.game.completed) {
+                    this.wordGuessed();
+                }
+                if (this.game.lastResult.invalidWord) {
+                    this.invalidWord();
+                }
+                this.nextGuess = '';
+                this.hasTyped = false;
+
             },
             input: function (letter) {
                 if (!this.hasTyped) {
@@ -81,7 +84,7 @@
                 if (this.nextGuess.length < this.game.wordLength) {
                     this.nextGuess += letter;
                 } else {
-                    console.log("Word length reached");
+                   // ignore
                 }
             },
             backspace: function () {

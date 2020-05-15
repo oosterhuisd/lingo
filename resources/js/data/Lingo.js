@@ -6,13 +6,30 @@ class Lingo {
         this.inPlace = props.firstLetter;
         this.correctLetters = [];
         this.guesses = [];
+        this.completed = false;
+        this.lastResult = {};
     }
 
     async verify(axios, word) {
+        let game = this;
         this.guesses.push(word);
+        this.lastResult = {};
         return axios.post('/api/lingo/validate', {
             id: this.id,
             guess: word
+        }).then(function(response) {
+            if (response.status === 200) {
+                game.completed = true;
+            } else if (response.status === 206) { // partial result
+                game.inPlace = response.data.inPlace;
+                game.correctLetters = response.data.correctLetters;
+            }
+        }).catch(function(response) {
+            if (response.status === 400) {
+                game.lastResult.invalidWord = true;
+            } else {
+                game.lastResult.unknownWord = true;
+            }
         });
     }
 
