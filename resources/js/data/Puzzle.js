@@ -18,9 +18,11 @@ class Puzzle {
     }
 
     async getNextLetter(axios) {
-        return axios.post('/api/puzzle/validate', {
+        return axios.post('/api/puzzle/getLetter', {
             id: this.id,
             currentLetters: this.inPlace
+        }).then(function(response) {
+            this.inPlace = response.data.letters;
         });
     }
 

@@ -31,7 +31,13 @@
         },
         methods: {
             drawLetter() {
-
+                this.game.getNextLetter(axios);
+            },
+            greenBall() {
+                this.game.getNextLetter(axios);
+            },
+            redBall() {
+                this.game.getNextLetter(axios);
             },
         },
         mounted() {

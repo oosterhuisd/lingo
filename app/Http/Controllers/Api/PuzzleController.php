@@ -28,6 +28,10 @@ class PuzzleController extends Controller
 //        ])->status(400);
     }
 
+    public function getLetter(Request $request) {
+
+    }
+
     public function getPositions(Request $request) {
         $wordId = $request->input('id');
         $letters = $request->input('letters');

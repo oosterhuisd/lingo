@@ -20,7 +20,6 @@ class Lingo {
         }).then(function(response) {
             if (response.status === 200) {
                 game.completed = true;
-            } else if (response.status === 206) { // partial result
                 game.inPlace = response.data.inPlace;
                 game.correctLetters = response.data.correctLetters;
             }
