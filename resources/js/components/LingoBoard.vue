@@ -78,7 +78,6 @@
                     Message.push("De beurt gaat naar het andere team");
                     this.invalidWord();
                 }
-
                 if (this.game.completed) {
                     this.wordGuessed();
                 }

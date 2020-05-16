@@ -46,11 +46,11 @@ class GameController {
             this.gamePhase = 'puzzle';
         });
         document.addEventListener('LingoBadWordInput', evt => {
-            console.log("A Lingo bad word");
+            console.log("A Lingo bad word event was caught");
             this.switchTeams();
         });
         document.addEventListener('LingoTimeout', evt => {
-            console.log("A Lingo timeout");
+            console.log("A Lingo timeout was caught");
             this.switchTeams();
         });
         document.addEventListener('LingoAttempt', evt => {
@@ -82,6 +82,7 @@ class GameController {
             puzzlesCompleted: 0
         };
         this.currentRound = 1;
+        this.activeTeam = this.team1;
 
         // load games
         this.lingoGame = await Lingo.newGame(axios, this.currentRound);

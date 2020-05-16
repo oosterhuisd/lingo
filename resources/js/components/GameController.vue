@@ -3,7 +3,7 @@
         <div class="row justify-content-center" v-if="this.initialized">
 
             <div class="col-md-2">
-                <team :name="'Team 1'" :data="gameController.team1" :isPlaying="gameController.activeTeam == gameController.team1"></team>
+                <team :name="'Team 1'" :data="gameController.team1" :isPlaying="team1Active"></team>
             </div>
             <div class="col-md-8">
                 <lingo-board v-if="doLingo"
@@ -20,7 +20,7 @@
                 <bingo-card v-if="gameController.gamePhase == 'bingo'"></bingo-card>
             </div>
             <div class="col-md-2">
-                <team :name="'Team 2'" :data="gameController.team2" :isPlaying="gameController.activeTeam == gameController.team1"></team>
+                <team :name="'Team 2'" :data="gameController.team2" :isPlaying="team2Active"></team>
             </div>
         </div>
     </div>
@@ -55,6 +55,12 @@
             }
         },
         computed: {
+            team1Active() {
+                return this.gameController.activeTeam == this.gameController.team1;
+            },
+            team2Active() {
+                return this.gameController.activeTeam == this.gameController.team2;
+            },
             puzzleInstance() {
                 if (this.activeTeam == this.team1) {
                     return this.gameController.puzzleGame1;
@@ -68,18 +74,17 @@
         },
         methods: {
             lingoWordGuessed() {
-                Message.push("Word was guessed by " + this.activeTeam.name)
-                this.activeTeam.score += 25;
-                this.gamePhase = 'puzzle';
-                this.newLingoGame();
+                // Message.push("Word was guessed by " + this.activeTeam.name)
+                // this.activeTeam.score += 25;
+                // this.gamePhase = 'puzzle';
+                // this.newLingoGame();
             },
             lingoWordInvalid() {
-                this.switchActiveTeam();
+                // this.switchActiveTeam();
             },
             puzzleWordGuessed() {
-                this.activeTeam.score += 100;
-                this.switchActiveTeam();
-                this.gamePhase = 'lingo';
+                // this.activeTeam.score += 100;
+                // this.gamePhase = 'lingo';
                 Message.push("Puzzle word was guessed by " + this.activeTeam.name)
             },
             puzzleWordNotGuessed() {

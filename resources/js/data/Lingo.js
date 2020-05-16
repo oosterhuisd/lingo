@@ -66,13 +66,11 @@ class Lingo {
     nextAttempt() {
         let nextAttempt = {...this.getCurrentAttempt()};
         nextAttempt.contains = []; // reset contains list, but keep correct list
-        for (let i in nextAttempt.correct) { // all other prefills are kept, add new ones
-            nextAttempt.prefill[i] = nextAttempt.typed[i];
-        }
+        nextAttempt.correct.forEach(pos => {
+            nextAttempt.prefill[pos] = nextAttempt.typed[pos];
+        }); // all other prefills are kept, add new ones
         nextAttempt.typed = {}; // now clear typed buffer
         this.attempts[++this.currentAttempt] = nextAttempt;
-        console.log(this.attempts);
-        console.log("Current attempt is now at " + this.currentAttempt);
     }
 
     getHint() {
