@@ -38,9 +38,9 @@ class Lingo {
             guess: word
         }).then((response) => {
             if (response.data.win) {
-                game.completed = true;
-                document.dispatchEvent(new Event('LingoCompleted'));
                 for (let i = 0; i < this.wordLength; i++) currentAttempt.correct.push(i);
+                game.completed = true;
+                document.dispatchEvent(new Event('LingoSuccess'));
             } else {
                 currentAttempt.contains = response.data.contains;
                 currentAttempt.correct = response.data.correct;

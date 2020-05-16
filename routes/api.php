@@ -21,6 +21,6 @@ Route::group([], function() {
     Route::post('/lingo/getBonusLetter/{word}/{position}', 'Api\LingoController@getBonusLetter');
 
     Route::get('/puzzle/getWord/{wordLength}', 'Api\PuzzleController@getWord');
-    Route::post('/puzzle/validate', 'Api\PuzzleController@validateWord');
-    Route::post('/puzzle/getLetter', 'Api\PuzzleController@getLetter');
+    Route::post('/puzzle/validate/{word}', 'Api\PuzzleController@validateWord');
+    Route::post('/puzzle/getLetterPosition/{word}/{position}', 'Api\PuzzleController@getLetterPosition');
 });

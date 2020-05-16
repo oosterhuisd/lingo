@@ -57,6 +57,7 @@
             },
             wordGuessed() {
                 this.$emit('wordGuessed');
+                document.dispatchEvent(new Event('LingoSuccess'));
             },
             invalidWord() {
                 this.$emit('invalidWord');
@@ -97,23 +98,5 @@
     }
 </script>
 <style lang="scss" scoped>
-.letter {
-    border: 2px solid #ccc;
-    width: 4em;
-    height: 4em;
-    line-height: 4em;
-    font-size: 2em;
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
-    &.correct {
-        background-color: blue;
-        color: white;
-    }
-    &.contains > div {
-        border-radius: 50%;
-        background-color: yellow;
-        color: black;
-    }
-}
+
 </style>

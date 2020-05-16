@@ -1,29 +1,61 @@
 class Puzzle {
 
-    constructor(props) {
+    constructor(props, greenBalls) {
         this.id = props.id;
-        this.wordLength = props.length;
-        this.inPlace = props.firstLetter;
         this.letters = props.letters;
-        this.guesses = [];
+        this.confirmedPositions = [];
         this.completed = false;
-        this.lastResult = {};
+        this.balls = ['red','red'];
+        for (let i=0; i < greenBalls; i++) this.balls.push('green');
+        for (let i=0; i < this.letters.length; i++) this.balls.push(this.letters[i]);
     }
 
     async verify(axios, word) {
         return axios.post('/api/puzzle/validate', {
             id: this.id,
             guess: word
+        }).then(response => {
+            this.completed = true;
+            document.dispatchEvent(new Event('PuzzleSuccess'));
+        }).catch(error => {
+            Message.push("Dat is niet het juiste woord. Helaas!");
         });
     }
 
-    async getNextLetter(axios) {
-        return axios.post('/api/puzzle/getLetter', {
-            id: this.id,
-            currentLetters: this.inPlace
-        }).then(function(response) {
-            this.inPlace = response.data.letters;
+    async drawLetter(axios) {
+        let pos = Math.floor(Math.random() * this.balls.length);
+        let ball = this.balls[pos];
+        this.balls.splice(pos, 1); // remove drawn ball
+
+        console.log("Ball drawn: " + ball);
+
+        if (ball == 'red') {
+            document.dispatchEvent(new Event('RedBallDrawn'));
+            return;
+        } else if (ball == 'green') {
+            document.dispatchEvent(new Event('RedBallDrawn'));
+            return;
+        }
+        let position = await axios.post('/api/puzzle/getLetterPosition/' + this.id + '/' + ball, {
+            knownPositions: this.confirmedPositions
+        }).then(response => {
+            let properPosition = response.data.position;
+            console.log("Proper position", properPosition);
+            console.log(this.letters);
+            if (this.letters[properPosition] !== ball) { // it's already in the right spot
+                for (let i = 0; i < this.letters.length; i++) {
+                    if (this.confirmedPositions.includes(i)) continue;
+                    if (this.letters[i] == ball) { // switcheroo
+                        let lt = this.letters;
+                        lt = lt.replaceAt(i, this.letters[properPosition]);
+                        lt = lt.replaceAt(properPosition, ball);
+                        this.letters = lt;
+                    }
+                }
+            }
+            this.confirmedPositions.push(response.data.position);
         });
+        return position;
     }
 
     /**
@@ -33,13 +65,13 @@ class Puzzle {
      * @param puzzlesCompleted
      * @returns {Promise<Puzzle>}
      */
-    static async newGame(axios, puzzlesCompleted) {
+    static async newGame(axios, puzzlesCompleted, greenBallsDrawn) {
         let wordLength;
         if (puzzlesCompleted % 3 == 0) wordLength = 11;
         else if (puzzlesCompleted % 3 == 1) wordLength = 12;
         else if (puzzlesCompleted % 3 == 2) wordLength = 13;
         const response = await axios.get(`/api/puzzle/getWord/` + wordLength);
-        return new Puzzle(response.data);
+        return new Puzzle(response.data, 2 - greenBallsDrawn);
     }
 
     async init(axios, wordLength) {

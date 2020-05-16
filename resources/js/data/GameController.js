@@ -2,6 +2,8 @@ import Lingo from "./Lingo";
 import Puzzle from "./Puzzle";
 import Message from "./Message";
 
+let transitionDelay = 0;
+
 class GameController {
 
     constructor() {
@@ -45,11 +47,11 @@ class GameController {
     }
 
     setGameListeners() {
-        document.addEventListener('LingoCompleted', evt => {
+        document.addEventListener('LingoSuccess', evt => {
             Message.push("Dat is het goede woord!");
             this.activeTeam.score += 25;
             this.lingoWordsPlayed++;
-            setTimeout(() => { this.gamePhase = 'puzzle'; }, 2500);
+            setTimeout(() => { this.gamePhase = 'puzzle'; }, transitionDelay);
         });
         document.addEventListener('LingoTurnCompleted', evt => {
             if (this.lingoGame.isExtraAttempt) {
@@ -78,15 +80,31 @@ class GameController {
         document.addEventListener('LingoAttempt', evt => {
             console.log("A Lingo attempt was submitted");
         });
-        document.addEventListener('PuzzleWordGuessed', evt => {
-            console.log("A Puzzle word was guessed!");
+        document.addEventListener('RedBallDrawn', evt => {
+            Message.push("Rukkie! Da's de rode bal!");
+            this.switchTeams();
+            setTimeout(() => {
+                this.gamePhase = 'lingo';
+                this.switchTeams();
+            }, transitionDelay);
+        });
+        document.addEventListener('GreenBallDrawn', evt => {
+            this.activeTeam.greenBallsDrawn++;
+            Message.push("GROENE BAL!");
+        });
+        document.addEventListener('PuzzleSuccess', evt => {
+            Message.push("Dat is het juiste woord! Jullie krijgen er 100 EUR bij!");
             this.activeTeam.puzzlesCompleted++;
+            this.activeTeam.score += 100;
             if (this.activeTeam == this.team1) {
-                this.puzzleGame1 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted);
+                this.puzzleGame1 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn);
             } else {
-                this.puzzleGame2 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted);
+                this.puzzleGame2 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn);
             }
-            this.gamePhase = 'lingo';
+            setTimeout(() => {
+                this.gamePhase = 'lingo';
+                this.switchTeams();
+                }, transitionDelay);
         });
     }
 
@@ -95,21 +113,23 @@ class GameController {
             name: 'Team 1',
             score: 0,
             players: ['P1', 'P2'],
-            puzzlesCompleted: 0
+            puzzlesCompleted: 0,
+            greenBallsDrawn: 0
         };
         this.team2 = {
             name: 'Team 2',
             score: 0,
             players: ['P3', 'P4'],
-            puzzlesCompleted: 0
+            puzzlesCompleted: 0,
+            greenBallsDrawn: 0
         };
         this.currentRound = 1;
         this.activeTeam = this.team1;
 
         // load games
         this.lingoGame = await Lingo.newGame(axios, this.currentRound);
-        this.puzzleGame1 = await Puzzle.newGame(axios, 11);
-        this.puzzleGame2 = await Puzzle.newGame(axios, 11);
+        this.puzzleGame1 = await Puzzle.newGame(axios, 0, 0);
+        this.puzzleGame2 = await Puzzle.newGame(axios, 0, 0);
 
         this.gamePhase = 'lingo';
         this.setGameListeners();

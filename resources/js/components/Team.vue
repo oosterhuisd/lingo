@@ -7,6 +7,9 @@
             <div>{{ player1 }} en {{ player2 }}</div>
         </div>
         <div class="card-footer">Score: {{ score }}</div>
+        <div v-for="i in data.greenBallsDrawn" class="green-ball">
+
+        </div>
     </div>
 </template>
 
@@ -49,3 +52,11 @@
         }
     }
 </script>
+<style lang="scss" scoped>
+.green-ball {
+    width: 1em;
+    height: 1em;
+    background-color: green;
+    border-radius: 50%;
+}
+</style>

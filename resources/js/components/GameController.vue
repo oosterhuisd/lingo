@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center" v-if="this.initialized">
 
             <div class="col-md-2">
@@ -9,8 +9,7 @@
                 <lingo-board v-if="doLingo"
                              :game="gameController.lingoGame"
                              ref="lingo"
-                             @wordGuessed="lingoWordGuessed"
-                             @invalidWord="lingoWordInvalid">
+                             >
                 </lingo-board>
                 <puzzle-word
                     v-if="gameController.gamePhase == 'puzzle'"
@@ -73,20 +72,6 @@
             }
         },
         methods: {
-            lingoWordGuessed() {
-                // Message.push("Word was guessed by " + this.activeTeam.name)
-                // this.activeTeam.score += 25;
-                // this.gamePhase = 'puzzle';
-                // this.newLingoGame();
-            },
-            lingoWordInvalid() {
-                // this.switchActiveTeam();
-            },
-            puzzleWordGuessed() {
-                // this.activeTeam.score += 100;
-                // this.gamePhase = 'lingo';
-                Message.push("Puzzle word was guessed by " + this.activeTeam.name)
-            },
             puzzleWordNotGuessed() {
                 this.gamePhase = 'lingo';
                 Message.push("Puzzle word was not guessed by " + this.activeTeam)

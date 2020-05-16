@@ -37,3 +37,7 @@ Vue.component('bingo-card', require('./components/BingoCard.vue').default);
 const app = new Vue({
     el: '#app',
 });
+
+String.prototype.replaceAt = function(index, replacement) {
+    return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+}
