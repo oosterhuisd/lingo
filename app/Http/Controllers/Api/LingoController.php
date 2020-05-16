@@ -3,30 +3,60 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Word;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use const http\Client\Curl\Features\HTTP2;
 
 class LingoController extends Controller
 {
 
     public function getWord(Request $request, int $wordLength) {
+        $word = Word::whereLength($wordLength)->inRandomOrder()->limit(1)->first();
         return [
-            'id' => 1,
+            'id' => $word->id,
             'length' => $wordLength,
-            'firstLetter' => 'A',
+            'firstLetter' => $word->word[0],
         ];
     }
 
     public function validateWord(Request $request) {
-        return response()->json([
-            'correct' => [1,2],
-            'contains' => [3,4]
-        ])->status(200);
+        $word = Word::find($request->input('id'));
+        $guess = strtolower(trim($request->input('guess')));
+        if ($guess === $word->word) {
+            return response()->json(['win'=>true]);
+        }
 
-//        return response()->json([
-//            'correct' => [1,2],
-//            'contains' => [3,4]
-//        ])->status(400);
+        // the words must be the same length and they have to start with the same letters
+        if (strlen($guess) !== strlen($word->word) || $guess[0] !== $word->word[0]) {
+            return response()->json(['invalidWord'=>true], 400);
+        }
+
+        // check that the word exists
+        try {
+            Word::where('word', 'LIKE', $guess)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['unknownWord'=>true], 400);
+        }
+
+        // mark correct letters
+        $correct = [];
+        $contains = [];
+        for ($i = 0; $i < strlen($guess); $i++) {
+            $letter = $guess[$i];
+            if ($word->word[$i] === $letter) {
+                $correct []= $i;
+            } else if (strpos($word->word, $letter)) {
+                $contains []= $i;
+            }
+        }
+        return response()->json([
+            'correct' => $correct,
+            'contains' => $contains
+        ]);
+
     }
 
 }
