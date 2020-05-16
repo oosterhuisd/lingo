@@ -1,26 +1,8 @@
 <template>
-    <div class="card">
-        <div class="card-header">Lingo</div>
-
-        <div class="card-body">
-            <button class="btn btn-primary" @click="wordGuessed">
-                Woord is geraden
-            </button>
-            <button class="btn btn-secondary" @click="invalidWord">
-                Verkeerd woord
-            </button>
+    <div>
+        <div v-for="index in game.wordLength" :key="index" class="justify-content-between letter">
+            {{ getLetter(index - 1, attempt) }}
         </div>
-
-        <div v-for="attempt in game.attempts" class="d-flex word">
-            <div v-for="index in game.wordLength" :key="index" :class="getClass(index - 1, attempt)" class="justify-content-between letter">
-                {{ getLetter(index - 1, attempt) }}
-            </div>
-        </div>
-<!--        <div class="d-flex word">-->
-<!--            <div v-for="(number, index) in game.wordLength" :key="index" class="justify-content-between letter">-->
-<!--                {{ getLetter(index) }}-->
-<!--            </div>-->
-<!--        </div>-->
     </div>
 </template>
 
@@ -32,8 +14,7 @@
     export default {
         mixins: [keyEventsMixin],
         props: {
-            game: {
-                type: Lingo,
+            attempt: {
                 required: true
             }
         },
@@ -55,12 +36,8 @@
         },
         methods: {
             getLetter(position, attempt) {
+                console.log(attempt);
                 return attempt.typed[position] || attempt.prefill[position] || '';
-            },
-            getClass(position, attempt) {
-                console.log(attempt)
-                if (attempt.correct.includes(position)) return 'correct';
-                if (attempt.contains.includes(position)) return 'contains';
             },
             wordGuessed() {
                 this.$emit('wordGuessed');
@@ -77,13 +54,15 @@
                 }
             },
             submit: async function () {
-                let result = await this.game.verifyCurrentAttempt(axios);
+                await this.game.verify(axios, this.nextGuess);
                 if (this.game.completed) {
-                    return this.wordGuessed();
+                    this.wordGuessed();
                 }
-                if (result.invalidWord) {
-                    return this.invalidWord();
+                if (this.game.lastResult.invalidWord) {
+                    this.invalidWord();
                 }
+                this.nextGuess = '';
+                this.hasTyped = false;
 
             },
             input: function (letter) {
@@ -95,8 +74,8 @@
             },
             backspace: function () {
                 if (this.cursorAt > 0) {
-                    this.game.setChar(--this.cursorAt, '');
-                    // this.cursorAt--;
+                    this.game.getCurrentAttempt().typed[this.cursorAt] = '';
+                    this.cursorAt--;
                 }
             }
         },
@@ -105,7 +84,7 @@
         }
     }
 </script>
-<style lang="scss" scoped>
+<style type="text/scss" scoped>
 .letter {
     border: 2px solid #ccc;
     width: 4em;
