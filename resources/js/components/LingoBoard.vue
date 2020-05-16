@@ -13,14 +13,9 @@
 
         <div v-for="attempt in game.attempts" class="d-flex word">
             <div v-for="index in game.wordLength" :key="index" :class="getClass(index - 1, attempt)" class="justify-content-between letter">
-                {{ getLetter(index - 1, attempt) }}
+                <div>{{ getLetter(index - 1, attempt) }}</div>
             </div>
         </div>
-<!--        <div class="d-flex word">-->
-<!--            <div v-for="(number, index) in game.wordLength" :key="index" class="justify-content-between letter">-->
-<!--                {{ getLetter(index) }}-->
-<!--            </div>-->
-<!--        </div>-->
     </div>
 </template>
 
@@ -47,7 +42,6 @@
         },
         data() {
             return {
-                nextGuess: '',
                 cursorAt: 0
             }
         },
@@ -58,7 +52,6 @@
                 return attempt.typed[position] || attempt.prefill[position] || '';
             },
             getClass(position, attempt) {
-                console.log(attempt)
                 if (attempt.correct.includes(position)) return 'correct';
                 if (attempt.contains.includes(position)) return 'contains';
             },
@@ -67,6 +60,9 @@
             },
             invalidWord() {
                 this.$emit('invalidWord');
+            },
+            maxTurnsReached() {
+                this.$emit('maxTurnsReached');
             },
             undo: function () {
                 if (this.game.guesses.length > 1) {
@@ -78,15 +74,19 @@
             },
             submit: async function () {
                 let result = await this.game.verifyCurrentAttempt(axios);
-                if (this.game.completed) {
-                    return this.wordGuessed();
-                }
-                if (result.invalidWord) {
-                    return this.invalidWord();
+                if (result.invalidWord || result.unknownWord) {
+                    Message.push("De beurt gaat naar het andere team");
+                    this.invalidWord();
                 }
 
+                if (this.game.completed) {
+                    this.wordGuessed();
+                }
+                this.game.nextAttempt();
+                this.cursorAt = 0;
             },
             input: function (letter) {
+                console.log("Handling input for lingo game")
                 if (this.cursorAt >= this.game.wordLength) {
                     return false; // too long
                 }
@@ -96,12 +96,10 @@
             backspace: function () {
                 if (this.cursorAt > 0) {
                     this.game.setChar(--this.cursorAt, '');
-                    // this.cursorAt--;
                 }
             }
         },
         mounted() {
-            this.nextGuess = this.game.inPlace;
         }
     }
 </script>
@@ -118,6 +116,11 @@
     &.correct {
         background-color: blue;
         color: white;
+    }
+    &.contains > div {
+        border-radius: 50%;
+        background-color: yellow;
+        color: black;
     }
 }
 </style>

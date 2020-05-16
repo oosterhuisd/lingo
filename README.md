@@ -27,14 +27,15 @@ Todo:
 
 - [x]  Handle keyboard input
 - [ ]  Lingo rounds
+- [ ]  ij ligature
 - [ ]  Word finder
 - [ ]  Final round
-- [ ]  Seed database
+- [x]  Seed database
 - [ ]  Enter team member names
 - [ ]  Persist games in session/db
 - [ ]  Layout
 - [ ]  Messaging
-- [ ]  Sounds
+- [ ]  Sounds & animations
 
 ## Maintainers
 

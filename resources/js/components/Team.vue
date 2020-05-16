@@ -30,10 +30,10 @@
         },
         computed: {
             player1() {
-                return this.data.player1;
+                return this.data.players[0];
             },
             player2() {
-                return this.data.player2;
+                return this.data.players[1];
             },
             score() {
                 return this.data.score;

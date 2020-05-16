@@ -1,7 +1,11 @@
+import Message from "./Message";
+
 class Lingo {
 
     constructor(props) {
-        this.id = props.id;
+        const maxAttempts = 5;
+        const extraAttempts = 1;
+        this.id = props.id; // the id of the word we are looking for
         this.wordLength = props.length;
         this.inPlace = props.firstLetter;
         this.correctLetters = [];
@@ -14,7 +18,7 @@ class Lingo {
             { prefill: {}, typed: {}, correct: [], contains: [] },
             { prefill: {}, typed: {}, correct: [], contains: [] }
         ];
-        this.currentAttempt = 1;
+        this.currentAttempt = 0;
     }
 
     async verifyCurrentAttempt(axios) {
@@ -26,52 +30,67 @@ class Lingo {
         await axios.post('/api/lingo/validate', {
             id: this.id,
             guess: word
-        }).then(function(response) {
+        }).then((response) => {
             if (response.data.win) {
                 game.completed = true;
+                document.dispatchEvent(new Event('LingoCompleted'));
+                for (let i = 0; i < this.wordLength; i++) currentAttempt.correct.push(i);
             } else {
                 currentAttempt.contains = response.data.contains;
                 currentAttempt.correct = response.data.correct;
-                game.nextAttempt();
             }
-        }).catch(function(response) {
-            if (response.data.invalidWord) {
+        }).catch((error) => {
+            if (error.response.data.invalidWord) {
                 result.invalidWord = true;
+                Message.push("Het woord is niet geldig");
             } else {
+                Message.push("Het woord staat niet in het woordenboek");
                 result.unknownWord = true;
             }
+            document.dispatchEvent(new Event('LingoBadWordInput'));
         });
         return result;
     }
 
     setChar(position, letter) {
         let _attempts = {...this.attempts};
-        let a = _attempts[this.currentAttempt - 1];
+        let a = _attempts[this.currentAttempt];
         a.typed[position] = letter;
         this.attempts = _attempts; // this so Vue detects the change and rerenders
     }
 
     getCurrentAttempt() {
-        return this.attempts[this.currentAttempt - 1];
+        return this.attempts[this.currentAttempt];
     }
 
     nextAttempt() {
-        this.currentAttempt++;
+        let nextAttempt = {...this.getCurrentAttempt()};
+        nextAttempt.contains = []; // reset contains list, but keep correct list
+        for (let i in nextAttempt.correct) { // all other prefills are kept, add new ones
+            nextAttempt.prefill[i] = nextAttempt.typed[i];
+        }
+        nextAttempt.typed = {}; // now clear typed buffer
+        this.attempts[++this.currentAttempt] = nextAttempt;
+        console.log(this.attempts);
+        console.log("Current attempt is now at " + this.currentAttempt);
     }
 
     getHint() {
         return this.inPlace;
     }
-    static async newGame(axios, wordLength) {
-        const response = await axios.get(`/api/lingo/getWord/` + wordLength);
+
+    static getWordLengthForRound(round) {
+        switch (round) {
+            case 3: return 7;
+            case 2: return 6;
+            default: return 5;
+        }
+    }
+
+    static async newGame(axios, round) {
+        const response = await axios.get(`/api/lingo/getWord/` + Lingo.getWordLengthForRound(round));
         return new Lingo(response.data);
     }
-    async init(axios, wordLength) {
-        const response = await axios.get(`/api/lingo/getWord/` + wordLength);
-        this.id = response.data.id;
-        this.wordLength = response.data.length;
-        this.inPlace = response.data.firstLetter;
-        this.correctLetters = [];
-    }
+
 }
 export default Lingo;
