@@ -31,8 +31,13 @@ class GameController {
         return null;
     }
 
-    switchTeams() {
+    switchTeams(getBonusLetter) {
         this.activeTeam = (this.activeTeam == this.team1) ? this.team2 : this.team1;
+        if (getBonusLetter === true && this.getActiveGame() instanceof Lingo) {
+            if (this.lingoGame.getBonusLetter()) {
+                Message.push(this.activeTeam.name + " krijgt een bonusletter!");
+            }
+        }
     }
 
     lingoCompleted() {
@@ -41,17 +46,34 @@ class GameController {
 
     setGameListeners() {
         document.addEventListener('LingoCompleted', evt => {
-            console.log("A Lingo game was completed!");
+            Message.push("Dat is het goede woord!");
             this.activeTeam.score += 25;
-            this.gamePhase = 'puzzle';
+            this.lingoWordsPlayed++;
+            setTimeout(() => { this.gamePhase = 'puzzle'; }, 2500);
         });
-        document.addEventListener('LingoBadWordInput', evt => {
-            console.log("A Lingo bad word event was caught");
-            this.switchTeams();
+        document.addEventListener('LingoTurnCompleted', evt => {
+            if (this.lingoGame.isExtraAttempt) {
+                Message.push("Het maximaal aantal beurten is bereikt. De beurt gaat naar het " +
+                    "andere team!");
+            }
+            if (this.lingoGame.lastResult.invalidWord
+                  || this.lingoGame.lastResult.unknownWord
+                  || this.lingoGame.isExtraAttempt) {
+                this.switchTeams(true);
+            }
+        });
+        document.addEventListener('LingoWordNotGuessed', evt => {
+            Message.push("Geeft niks! We gaan gewoon verder met een nieuw woord.");
+            Lingo.newGame(axios, this.currentRound)
+                .then(game => this.lingoGame = game);
         });
         document.addEventListener('LingoTimeout', evt => {
             console.log("A Lingo timeout was caught");
-            this.switchTeams();
+            this.switchTeams(true);
+        });
+        document.addEventListener('LingoMaxAttemptsReached', evt => {
+            console.log("Max attempts was reached");
+            this.switchTeams(true);
         });
         document.addEventListener('LingoAttempt', evt => {
             console.log("A Lingo attempt was submitted");
@@ -60,9 +82,9 @@ class GameController {
             console.log("A Puzzle word was guessed!");
             this.activeTeam.puzzlesCompleted++;
             if (this.activeTeam == this.team1) {
-                this.puzzleGame1 = Puzzle.newGame(axios, 11);
+                this.puzzleGame1 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted);
             } else {
-                this.puzzleGame2 = Puzzle.newGame(axios, 11);
+                this.puzzleGame2 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted);
             }
             this.gamePhase = 'lingo';
         });

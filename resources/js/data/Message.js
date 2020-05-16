@@ -3,9 +3,10 @@ class Message {
     static push(message, level) {
         Vue.toasted.show(message, {
             position: 'bottom-center',
-            duration: 2000,
+            duration: 3000,
             keepOnHover: true,
-            theme: 'bubble'
+            theme: 'bubble',
+            iconPack: 'fontawesome',
         });
     }
 

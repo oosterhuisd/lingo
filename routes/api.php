@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([], function() {
     Route::get('/lingo/getWord/{wordLength}', 'Api\LingoController@getWord');
     Route::post('/lingo/validate', 'Api\LingoController@validateWord');
+    Route::post('/lingo/getBonusLetter/{word}/{position}', 'Api\LingoController@getBonusLetter');
 
     Route::get('/puzzle/getWord/{wordLength}', 'Api\PuzzleController@getWord');
     Route::post('/puzzle/validate', 'Api\PuzzleController@validateWord');

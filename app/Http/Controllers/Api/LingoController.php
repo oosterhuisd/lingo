@@ -59,4 +59,8 @@ class LingoController extends Controller
 
     }
 
+    public function getBonusLetter(Request $request, Word $word, $index) {
+        return response()->json(['letter' => $word->word[$index]]);
+    }
+
 }

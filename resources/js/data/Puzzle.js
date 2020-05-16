@@ -26,7 +26,18 @@ class Puzzle {
         });
     }
 
-    static async newGame(axios, wordLength) {
+    /**
+     * Players start with a 11 letter word, then get a 12 letter word, then a 13 letter word.
+     * If they guess all three words, the start back at 11 letters.
+     * @param axios
+     * @param puzzlesCompleted
+     * @returns {Promise<Puzzle>}
+     */
+    static async newGame(axios, puzzlesCompleted) {
+        let wordLength;
+        if (puzzlesCompleted % 3 == 0) wordLength = 11;
+        else if (puzzlesCompleted % 3 == 1) wordLength = 12;
+        else if (puzzlesCompleted % 3 == 2) wordLength = 13;
         const response = await axios.get(`/api/puzzle/getWord/` + wordLength);
         return new Puzzle(response.data);
     }

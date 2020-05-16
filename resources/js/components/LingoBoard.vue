@@ -65,12 +65,7 @@
                 this.$emit('maxTurnsReached');
             },
             undo: function () {
-                if (this.game.guesses.length > 1) {
-                    this.game.guesses.pop();
-                    Message.push("Undid last action");
-                } else {
-                    Message.push("Nothing to undo");
-                }
+                this.game.undo();
             },
             submit: async function () {
                 let result = await this.game.verifyCurrentAttempt(axios);
@@ -81,7 +76,6 @@
                 if (this.game.completed) {
                     this.wordGuessed();
                 }
-                this.game.nextAttempt();
                 this.cursorAt = 0;
             },
             input: function (letter) {

@@ -50,7 +50,7 @@
             gameController: {
                 deep: true,
                 handler(game) {
-                    console.log("A game updated was detected");
+                    console.debug("A game updated was detected");
                 }
             }
         },
@@ -115,6 +115,9 @@
                     if (evt.ctrlKey && evt.keyCode === 90) {
                         return activeGame.undo();
                     }
+                    if (evt.ctrlKey) { // allow [CTRL + *] for easy dev page refresh
+                        return true;
+                    }
                     if (evt.keyCode > 64 && evt.keyCode < 91) {
                         // a valid letter was typed
                         return activeGame.input(String.fromCharCode(evt.keyCode));
@@ -127,10 +130,7 @@
                         // Backspace was pressed
                         return activeGame.backspace();
                     }
-                    if (evt.ctrlKey) { // allow [CTRL + *] for easy dev page refresh
-                        return true;
-                    }
-                    Message.push("Ignoring keystroke " + evt.keyCode);
+                    console.debug("Ignoring keystroke " + evt.keyCode);
                     return false; // ignore all other keystrokes
                 };
             }
