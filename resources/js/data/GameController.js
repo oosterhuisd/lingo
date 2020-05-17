@@ -54,6 +54,7 @@ class GameController {
             setTimeout(() => { this.gamePhase = 'puzzle'; }, transitionDelay);
         });
         document.addEventListener('LingoTurnCompleted', evt => {
+            // this event is triggered when a lingo turn is completed without success
             if (this.lingoGame.isExtraAttempt) {
                 Message.push("Het maximaal aantal beurten is bereikt. De beurt gaat naar het " +
                     "andere team!");
@@ -82,10 +83,13 @@ class GameController {
         });
         document.addEventListener('RedBallDrawn', evt => {
             Message.push("Rukkie! Da's de rode bal!");
-            setTimeout(() => {
-                this.gamePhase = 'lingo';
-                this.switchTeams();
-            }, transitionDelay);
+            Lingo.newGame(axios, this.currentRound).then(game => {
+                this.lingoGame = game;
+                setTimeout(() => {
+                    this.gamePhase = 'lingo';
+                    this.switchTeams();
+                }, transitionDelay);
+            });
         });
         document.addEventListener('GreenBallDrawn', evt => {
             this.activeTeam.greenBallsDrawn++;
@@ -104,6 +108,22 @@ class GameController {
                 this.gamePhase = 'lingo';
                 this.switchTeams();
                 }, transitionDelay);
+        });
+        document.addEventListener('PuzzleBadGuess', evt => {
+            Message.push(evt.guess.toUpperCase() + " is helaas niet het goede woord. Geeft niks! We gaan gewoon verder met een nieuw woord.");
+            this.lingoGame = Lingo.newGame(axios, this.currentRound);
+
+            setTimeout(() => {
+                this.gamePhase = 'lingo';
+            }, transitionDelay);
+        });
+        document.addEventListener('PuzzleTimeout', evt => {
+            Lingo.newGame(axios, this.currentRound).then(game => {
+                this.lingoGame = game;
+                setTimeout(() => {
+                    this.gamePhase = 'lingo';
+                }, transitionDelay);
+            });
         });
     }
 

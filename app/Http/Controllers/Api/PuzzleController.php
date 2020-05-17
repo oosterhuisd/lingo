@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class PuzzleController extends Controller
 {
     /**
-     * To prevent users from knowing words by id, you could set up a mapping
+     * To prevent users from knowing words by id, we _could_ set up a mapping
      * for words, so each id is only used once.
      * @param Request $request
      * @param int $wordLength
@@ -32,5 +32,14 @@ class PuzzleController extends Controller
             }
         }
         // shouldn't happen
+    }
+
+    public function validateWord(Request $request, Word $word)
+    {
+        $guess = strtolower(trim($request->input('guess')));
+        if ($guess === $word->word) {
+            return response()->json(['result' => 'correct']);
+        }
+        return response()->json(['result' => 'incorrect'], 400);
     }
 }

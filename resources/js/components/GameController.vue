@@ -88,7 +88,6 @@
                 document.onkeydown = function(evt) {
                     let activeGame = controller.getActiveGameElement();
                     if (!activeGame) {
-                        console.log("No active game. Abort key.")
                         return true;
                     }
 

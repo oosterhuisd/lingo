@@ -57,6 +57,7 @@ class Lingo {
         });
         if (!game.completed) {
             if (this.isExtraAttempt) { // this was an extra attempt, you won't lose your turn
+                this.showWord();
                 return document.dispatchEvent(new Event('LingoWordNotGuessed'));
             }
             this.nextAttempt();
@@ -113,6 +114,19 @@ class Lingo {
                 });
             return true;
         }
+    }
+
+    async showWord() {
+        await axios.post('/api/lingo/getSolution/' + this.id)
+            .then(response => {
+                let attempt;
+                for (let i=0; i < response.data.word; i++) {
+                    attempt.prefill[i] = response.data.word[i];
+                    attempt.correct.push(i);
+                }
+                this.attempts.push(attempt);
+            });
+       return true;
     }
 
     undo() {

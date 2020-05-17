@@ -57,7 +57,6 @@
             },
             wordGuessed() {
                 this.$emit('wordGuessed');
-                document.dispatchEvent(new Event('LingoSuccess'));
             },
             invalidWord() {
                 this.$emit('invalidWord');

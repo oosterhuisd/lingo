@@ -1,3 +1,5 @@
+import Message from "./Message";
+
 class Puzzle {
 
     constructor(props, greenBalls) {
@@ -8,21 +10,23 @@ class Puzzle {
         this.balls = ['red','red'];
         for (let i=0; i < greenBalls; i++) this.balls.push('green');
         for (let i=0; i < this.letters.length; i++) this.balls.push(this.letters[i]);
+
+        this.ballsDrawn = 0;
     }
 
     async verify(axios, word) {
-        return axios.post('/api/puzzle/validate', {
-            id: this.id,
+        return axios.post('/api/puzzle/validate/' + this.id, {
             guess: word
         }).then(response => {
             this.completed = true;
             document.dispatchEvent(new Event('PuzzleSuccess'));
         }).catch(error => {
-            Message.push("Dat is niet het juiste woord. Helaas!");
+            document.dispatchEvent(new CustomEvent('PuzzleBadGuess', { guessed: word }));
+            Message.push(word.toUpperCase() + " is niet het juiste woord. Helaas!");
         });
     }
 
-    async drawLetter(axios) {
+    async drawBall(axios) {
         let pos = Math.floor(Math.random() * this.balls.length);
         let ball = this.balls[pos];
         this.balls.splice(pos, 1); // remove drawn ball
@@ -38,8 +42,6 @@ class Puzzle {
             knownPositions: this.confirmedPositions
         }).then(response => {
             let properPosition = response.data.position;
-            console.log("Proper position", properPosition);
-            console.log(this.letters);
             if (this.letters[properPosition] !== ball) { // it's already in the right spot
                 for (let i = 0; i < this.letters.length; i++) {
                     if (this.confirmedPositions.includes(i)) continue;
@@ -54,6 +56,10 @@ class Puzzle {
             this.confirmedPositions.push(response.data.position);
         });
         return position;
+    }
+
+    timeOut() {
+        document.dispatchEvent(new Event('PuzzleTimeout'));
     }
 
     /**

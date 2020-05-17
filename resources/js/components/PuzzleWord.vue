@@ -9,16 +9,22 @@
 <!--            <button class="btn btn-secondary" @click="redBall">-->
 <!--                Rode bal-->
 <!--            </button>-->
-            <button class="btn btn-lg btn-primary" @click="drawLetter">
-                Pak een bal
-            </button>
-        </div>
-        <div class="d-flex word">
-            <div v-for="(letter, index) in game.letters" :key="index" :class="getClass(index - 1)" class="justify-content-between letter">
-                <div>{{ letter }}</div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-lg btn-primary" @click="drawBall">
+                    Pak een bal
+                </button>
+                <button class="btn btn-lg btn-danger" @click="giveUp">
+                    Ik geef het op
+                </button>
+            </div>
+
+            <div class="d-flex justify-content-between word">
+                <div v-for="(letter, index) in game.letters" :key="index" :class="getClass(index)" class="letter">
+                    <div>{{ letter }}</div>
+                </div>
             </div>
         </div>
-        <input type="text" class="form-control form-control-lg" v-model="guess" autofocus />
+        <input placeholder="Typ hier je poging" type="text" class="form-control form-control-lg" v-model="guess" autofocus />
 
     </div>
 </template>
@@ -34,7 +40,7 @@
             game: {
                 type: Puzzle,
                 required: true
-            },
+            }
         },
         data() {
             return {
@@ -48,9 +54,16 @@
                 }
                 return '';
             },
-            drawLetter() {
-                this.game.drawLetter(axios);
+            drawBall() {
+                this.game.drawBall(axios);
             },
+            giveUp() {
+                this.game.timeOut();
+            },
+            async submit() {
+                await this.game.verify(axios, this.guess);
+                this.guess = '';
+            }
         },
         mounted() {
             console.debug('Puzzle component mounted.')
