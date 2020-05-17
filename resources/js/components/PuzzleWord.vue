@@ -9,8 +9,8 @@
 <!--            <button class="btn btn-secondary" @click="redBall">-->
 <!--                Rode bal-->
 <!--            </button>-->
-            <button class="btn btn-secondary" @click="drawLetter">
-                Pak een letter!
+            <button class="btn btn-lg btn-primary" @click="drawLetter">
+                Pak een bal
             </button>
         </div>
         <div class="d-flex word">

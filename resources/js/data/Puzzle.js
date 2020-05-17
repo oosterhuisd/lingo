@@ -27,8 +27,6 @@ class Puzzle {
         let ball = this.balls[pos];
         this.balls.splice(pos, 1); // remove drawn ball
 
-        console.log("Ball drawn: " + ball);
-
         if (ball == 'red') {
             document.dispatchEvent(new Event('RedBallDrawn'));
             return;

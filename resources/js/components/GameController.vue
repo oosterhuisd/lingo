@@ -61,11 +61,7 @@
                 return this.gameController.activeTeam == this.gameController.team2;
             },
             puzzleInstance() {
-                if (this.activeTeam == this.team1) {
-                    return this.gameController.puzzleGame1;
-                } else {
-                    return this.gameController.puzzleGame2;
-                }
+                return this.gameController.getActiveGame();
             },
             doLingo() {
                 return this.gameController.gamePhase == 'lingo' && !this.loading;

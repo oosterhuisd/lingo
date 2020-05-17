@@ -82,7 +82,6 @@ class GameController {
         });
         document.addEventListener('RedBallDrawn', evt => {
             Message.push("Rukkie! Da's de rode bal!");
-            this.switchTeams();
             setTimeout(() => {
                 this.gamePhase = 'lingo';
                 this.switchTeams();
