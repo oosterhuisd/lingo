@@ -9,7 +9,7 @@ class Puzzle {
         this.completed = false;
         this.balls = ['red','red'];
         for (let i=0; i < greenBalls; i++) this.balls.push('green');
-        for (let i=0; i < this.letters.length; i++) this.balls.push(this.letters[i]);
+        for (let l of this.letters) this.balls.push(l);
 
         this.ballsDrawn = 0;
     }
@@ -38,6 +38,7 @@ class Puzzle {
             document.dispatchEvent(new Event('RedBallDrawn'));
             return;
         }
+        this.ballsDrawn++;
         let position = await axios.post('/api/puzzle/getLetterPosition/' + this.id + '/' + ball, {
             knownPositions: this.confirmedPositions
         }).then(response => {
@@ -58,6 +59,10 @@ class Puzzle {
         return position;
     }
 
+    ballsToDraw() {
+        return 2 - this.ballsDrawn;
+    }
+
     timeOut() {
         document.dispatchEvent(new Event('PuzzleTimeout'));
     }
@@ -74,7 +79,7 @@ class Puzzle {
         if (puzzlesCompleted % 3 == 0) wordLength = 11;
         else if (puzzlesCompleted % 3 == 1) wordLength = 12;
         else if (puzzlesCompleted % 3 == 2) wordLength = 13;
-        const response = await axios.get(`/api/puzzle/getWord/` + wordLength);
+        const response = await axios.get(`/api/puzzle/newWord/` + wordLength);
         return new Puzzle(response.data, 2 - greenBallsDrawn);
     }
 

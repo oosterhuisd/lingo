@@ -15,7 +15,7 @@ class PuzzleController extends Controller
      * @param int $wordLength
      * @return array
      */
-    public function getWord(Request $request, int $wordLength) {
+    public function newWord(Request $request, int $wordLength) {
         $word = Word::whereLength($wordLength)->inRandomOrder()->limit(1)->first();
         return [
             'id' => $word->id,
@@ -41,5 +41,10 @@ class PuzzleController extends Controller
             return response()->json(['result' => 'correct']);
         }
         return response()->json(['result' => 'incorrect'], 400);
+    }
+
+    public function getSolution(Request $request, Word $word)
+    {
+        return response()->json(['word' => $word->word]);
     }
 }

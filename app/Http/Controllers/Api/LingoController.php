@@ -13,7 +13,7 @@ use const http\Client\Curl\Features\HTTP2;
 class LingoController extends Controller
 {
 
-    public function getWord(Request $request, int $wordLength) {
+    public function newWord(Request $request, int $wordLength) {
         $word = Word::whereLength($wordLength)->inRandomOrder()->limit(1)->first();
         return [
             'id' => $word->id,

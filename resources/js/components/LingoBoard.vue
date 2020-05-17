@@ -11,9 +11,9 @@
             </button>
         </div>
 
-        <div v-for="attempt in game.attempts" class="d-flex word">
-            <div v-for="index in game.wordLength" :key="index" :class="getClass(index - 1, attempt)" class="justify-content-between letter">
-                <div>{{ getLetter(index - 1, attempt) }}</div>
+        <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
+            <div v-for="index in game.wordLength" :key="index" class="letter" :class="getClass(index - 1, attempt)">
+                {{ getLetter(index - 1, attempt) }}
             </div>
         </div>
     </div>
@@ -56,6 +56,7 @@
                 if (attempt.contains.includes(position)) return 'contains';
             },
             wordGuessed() {
+                document.dispatchEvent(new Event('LingoSuccess'));
                 this.$emit('wordGuessed');
             },
             invalidWord() {
@@ -72,9 +73,6 @@
                 if (result.invalidWord || result.unknownWord) {
                     Message.push("De beurt gaat naar het andere team");
                     this.invalidWord();
-                }
-                if (this.game.completed) {
-                    this.wordGuessed();
                 }
                 this.cursorAt = 0;
             },

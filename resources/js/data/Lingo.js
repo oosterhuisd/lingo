@@ -147,7 +147,7 @@ class Lingo {
     }
 
     static async newGame(axios, round) {
-        const response = await axios.get(`/api/lingo/getWord/` + Lingo.getWordLengthForRound(round));
+        const response = await axios.get(`/api/lingo/newWord/` + Lingo.getWordLengthForRound(round));
         return new Lingo(response.data);
     }
 

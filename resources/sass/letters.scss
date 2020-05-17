@@ -1,19 +1,26 @@
 .letter {
-    border: 2px solid #ccc;
-    width: 4em;
-    height: 4em;
-    line-height: 4em;
-    font-size: 2em;
+    margin: 1px 1px 0 0;
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    font-family: 'Heebo', sans-serif;
+    font-size: 60px;
+    line-height: 96px;
     text-align: center;
     font-weight: bold;
     text-transform: uppercase;
+    background: linear-gradient(0deg, rgba(1,115,214,1) 0%, rgba(61,154,224,1) 65%, rgba(0,212,255,1) 100%);
+    color: $letter-tile-font-color;
+    border-radius: 5px;
+    box-shadow: $letter-tile-shadow;
+    -webkit-text-stroke: 1px darken($letter-tile-background, 10%);
     &.correct {
-        background-color: blue;
-        color: white;
+        background: $letter-tile-background-correct;
+        box-shadow: $letter-tile-correct-shadow;
+        -webkit-text-stroke: 1px darken($letter-tile-background-correct, 10%);
     }
     &.contains > div {
+        background: $letter-tile-background-contains;
         border-radius: 50%;
-        background-color: yellow;
-        color: black;
     }
 }

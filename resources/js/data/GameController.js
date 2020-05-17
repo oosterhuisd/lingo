@@ -46,12 +46,28 @@ class GameController {
 
     }
 
+    doPuzzleRound() {
+        this.gamePhase = 'puzzle';
+        this.getActiveGame().ballsDrawn = 0;
+    }
+
+    newLingoRound(delay) {
+        Lingo.newGame(axios, this.currentRound).then(game => {
+            this.lingoGame = game;
+            setTimeout(() => {
+                this.gamePhase = 'lingo';
+            }, delay || transitionDelay);
+        });
+    }
+
     setGameListeners() {
         document.addEventListener('LingoSuccess', evt => {
             Message.push("Dat is het goede woord!");
             this.activeTeam.score += 25;
             this.lingoWordsPlayed++;
-            setTimeout(() => { this.gamePhase = 'puzzle'; }, transitionDelay);
+            setTimeout(() => {
+                this.doPuzzleRound();
+            }, transitionDelay);
         });
         document.addEventListener('LingoTurnCompleted', evt => {
             // this event is triggered when a lingo turn is completed without success
@@ -111,19 +127,10 @@ class GameController {
         });
         document.addEventListener('PuzzleBadGuess', evt => {
             Message.push(evt.guess.toUpperCase() + " is helaas niet het goede woord. Geeft niks! We gaan gewoon verder met een nieuw woord.");
-            this.lingoGame = Lingo.newGame(axios, this.currentRound);
-
-            setTimeout(() => {
-                this.gamePhase = 'lingo';
-            }, transitionDelay);
+            this.newLingoRound();
         });
         document.addEventListener('PuzzleTimeout', evt => {
-            Lingo.newGame(axios, this.currentRound).then(game => {
-                this.lingoGame = game;
-                setTimeout(() => {
-                    this.gamePhase = 'lingo';
-                }, transitionDelay);
-            });
+            this.newLingoRound();
         });
     }
 
@@ -146,12 +153,11 @@ class GameController {
         this.activeTeam = this.team1;
 
         // load games
-        this.lingoGame = await Lingo.newGame(axios, this.currentRound);
+        this.setGameListeners();
         this.puzzleGame1 = await Puzzle.newGame(axios, 0, 0);
         this.puzzleGame2 = await Puzzle.newGame(axios, 0, 0);
 
-        this.gamePhase = 'lingo';
-        this.setGameListeners();
+        this.newLingoRound(0);
     }
 
 }

@@ -3,14 +3,8 @@
         <div class="card-header">Puzzelwoord</div>
 
         <div class="card-body">
-<!--            <button class="btn btn-secondary" @click="greenBall">-->
-<!--                Groene bal-->
-<!--            </button>-->
-<!--            <button class="btn btn-secondary" @click="redBall">-->
-<!--                Rode bal-->
-<!--            </button>-->
             <div class="d-flex justify-content-between">
-                <button class="btn btn-lg btn-primary" @click="drawBall">
+                <button class="btn btn-lg btn-primary" @click="drawBall" :disabled="!canDraw">
                     Pak een bal
                 </button>
                 <button class="btn btn-lg btn-danger" @click="giveUp">
@@ -47,12 +41,17 @@
                 guess: ''
             }
         },
+        computed: {
+            canDraw() {
+                return this.game.ballsToDraw() > 0;
+            }
+        },
         methods: {
             getClass(i) {
                 if (this.game.confirmedPositions.includes(i)) {
                     return 'correct';
                 }
-                return '';
+                return 'contains';
             },
             drawBall() {
                 this.game.drawBall(axios);
