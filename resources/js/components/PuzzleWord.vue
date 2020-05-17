@@ -53,7 +53,7 @@
             },
         },
         mounted() {
-            console.log('Component mounted.')
+            console.debug('Puzzle component mounted.')
         }
     }
 </script>

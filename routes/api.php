@@ -22,5 +22,5 @@ Route::group([], function() {
 
     Route::get('/puzzle/getWord/{wordLength}', 'Api\PuzzleController@getWord');
     Route::post('/puzzle/validate/{word}', 'Api\PuzzleController@validateWord');
-    Route::post('/puzzle/getLetterPosition/{word}/{position}', 'Api\PuzzleController@getLetterPosition');
+    Route::post('/puzzle/getLetterPosition/{word}/{letter}', 'Api\PuzzleController@getLetterPosition');
 });
