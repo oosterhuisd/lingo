@@ -12,7 +12,7 @@
                 </button>
             </div>
 
-            <div class="d-flex justify-content-between word">
+            <div class="d-flex justify-content-center word">
                 <div v-for="(letter, index) in game.letters" :key="index" :class="getClass(index)" class="letter">
                     <div>{{ letter }}</div>
                 </div>
@@ -70,5 +70,10 @@
     }
 </script>
 <style lang="scss" scoped>
-
+.letter {
+    width: 65px;
+    height: 65px;
+    font-size: 40px;
+    line-height: 65px;
+}
 </style>

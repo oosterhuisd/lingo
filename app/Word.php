@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Word whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Word whereWord($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Word gameWords()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Word length($length)
  */
 class Word extends Model
 {
@@ -32,11 +35,47 @@ class Word extends Model
     const IJ_LIGATURE = "\u{0133}";
 
     /**
-     * Counts the IJ ligature as 1 character instead of 2
+     * Counts the ij ligature as 1 character instead of 2
      * @param $word
      * @return int
      */
     public static function lingoLength($word) {
-        return strlen($word) - substr_count(strtolower($word), static::IJ_LIGATURE);
+        return mb_strlen($word);
+    }
+
+    /**
+     * Performs a multibyte str_shuffle
+     * @return string
+     */
+    public function shuffle() {
+        $tmp = preg_split("//u", $this->word, -1, PREG_SPLIT_NO_EMPTY);
+        shuffle($tmp);
+        return join("", $tmp);
+    }
+
+    /**
+     * Returns the character at a certain position in a multibyte string
+     * @param $index
+     */
+    public function getLetter($index) {
+        $chrArray = preg_split('//u', $this->word, -1, PREG_SPLIT_NO_EMPTY);
+        return $chrArray[$index];
+    }
+
+    /**
+     * @param Builder $query
+     * @param $length
+     * @return Builder
+     */
+    public function scopeLength(Builder $query, $length) {
+        return $query->where('length', $length);
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeGameWords(Builder $query) {
+        return $query->where('offer', true);
     }
 }

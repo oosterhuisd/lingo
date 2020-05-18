@@ -83,10 +83,6 @@
                 this.cursorAt = 0;
             },
             input: function (letter) {
-                console.log("Handling input for lingo game")
-                if (this.cursorAt >= this.game.wordLength) {
-                    return false; // too long
-                }
                 if (this.game.setChar(this.cursorAt, letter)) {
                     this.cursorAt++;
                 }
@@ -102,16 +98,13 @@
     }
 </script>
 <style lang="scss" scoped>
-    .lingo-board {
-        box-shadow: -2em 1.5em 0 #e1e1e1;
-    }
     .attempts {
-        transition: 500ms ease transform;
+        transition: all .75s ease-in-out;
         &.left {
-            transform: rotate3d(0, 1, 0.1, 23deg)
+            /*transform: rotate3d(0, 1, 0.1, 12deg)*/
         }
         &.right {
-            transform: rotate3d(0, 1, 0.1, 23deg)
+            /*transform: rotate3d(0, 1, -0.1, 12deg)*/
         }
     }
 </style>

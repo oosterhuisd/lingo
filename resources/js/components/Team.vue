@@ -1,9 +1,10 @@
 <template>
-    <div class="card">
-        <div class="card-header" :class="isPlaying ? 'bg-primary text-white' : ''">{{ name }}</div>
+    <div class="card" :class="isPlaying ? '' : 'inactive'">
+        <div class="card-header h3" :class="isPlaying ? 'bg-primary text-white' : ''">
+            {{ name }}
+        </div>
 
         <div class="card-body">
-
             <div>{{ player1 }} en {{ player2 }}</div>
         </div>
         <div class="card-footer">Score: {{ score }}</div>
@@ -58,5 +59,11 @@
     height: 1em;
     background-color: green;
     border-radius: 50%;
+}
+.card {
+    transition: all 1s ease-in-out;
+    &.inactive {
+
+    }
 }
 </style>
