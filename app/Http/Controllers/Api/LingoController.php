@@ -17,7 +17,7 @@ class LingoController extends Controller
         $word = Word::whereLength($wordLength)->inRandomOrder()->limit(1)->first();
         return [
             'id' => $word->id,
-            'length' => $wordLength,
+            'length' => $word->length,
             'firstLetter' => $word->word[0],
         ];
     }
@@ -30,7 +30,7 @@ class LingoController extends Controller
         }
 
         // the words must be the same length and they have to start with the same letters
-        if (strlen($guess) !== strlen($word->word) || $guess[0] !== $word->word[0]) {
+        if (Word::lingoLength($guess) !== $word->length || $guess[0] !== $word->word[0]) {
             return response()->json(['invalidWord'=>true], 400);
         }
 
@@ -44,7 +44,7 @@ class LingoController extends Controller
         // mark correct letters
         $correct = [];
         $contains = [];
-        for ($i = 0; $i < strlen($guess); $i++) {
+        for ($i = 0; $i < Word::lingoLength($guess); $i++) {
             $letter = $guess[$i];
             if ($word->word[$i] === $letter) {
                 $correct []= $i;

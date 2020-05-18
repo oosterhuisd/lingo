@@ -27,4 +27,16 @@ use Illuminate\Database\Eloquent\Model;
 class Word extends Model
 {
     protected $guarded = ['id'];
+
+    // the lowercase ĳ character in Unicode
+    const IJ_LIGATURE = "\u{0133}";
+
+    /**
+     * Counts the IJ ligature as 1 character instead of 2
+     * @param $word
+     * @return int
+     */
+    public static function lingoLength($word) {
+        return strlen($word) - substr_count(strtolower($word), static::IJ_LIGATURE);
+    }
 }

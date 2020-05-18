@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header">Lingo</div>
 
-        <div class="card-body">
+        <div class="card-body lingo-board">
             <button class="btn btn-primary" @click="wordGuessed">
                 Woord is geraden
             </button>
@@ -11,9 +11,11 @@
             </button>
         </div>
 
-        <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
-            <div v-for="index in game.wordLength" :key="index" class="letter" :class="getClass(index - 1, attempt)">
-                {{ getLetter(index - 1, attempt) }}
+        <div class="attempts" :class="orientation">
+            <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
+                <div v-for="index in game.wordLength" :key="index" class="letter" :class="getClass(index - 1, attempt)">
+                    {{ getLetter(index - 1, attempt) }}
+                </div>
             </div>
         </div>
     </div>
@@ -29,6 +31,10 @@
         props: {
             game: {
                 type: Lingo,
+                required: true
+            },
+            orientation: {
+                type: String,
                 required: true
             }
         },
@@ -96,5 +102,16 @@
     }
 </script>
 <style lang="scss" scoped>
-
+    .lingo-board {
+        box-shadow: -2em 1.5em 0 #e1e1e1;
+    }
+    .attempts {
+        transition: 500ms ease transform;
+        &.left {
+            transform: rotate3d(0, 1, 0.1, 23deg)
+        }
+        &.right {
+            transform: rotate3d(0, 1, 0.1, 23deg)
+        }
+    }
 </style>

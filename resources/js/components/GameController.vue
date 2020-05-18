@@ -8,6 +8,7 @@
             <div class="col-md-8">
                 <lingo-board v-if="doLingo"
                              :game="gameController.lingoGame"
+                             :orientation="team1Active ? 'left' : 'right'"
                              ref="lingo"
                              >
                 </lingo-board>

@@ -71,7 +71,7 @@ class Lingo {
         let a = _attempts[this.currentAttempt];
 
         if (letter.match(/j/i) && position > 0 && a.typed[position-1].match(/i/i)) {
-            a.typed[position - 1] = 'Ĳ'; // IJ ligatuur
+            a.typed[position - 1] = '\u0133'; // IJ ligatuur
             this.attempts = _attempts; // this so Vue detects the change and re-renders
             return false;
         }
@@ -125,7 +125,7 @@ class Lingo {
     }
 
     async showWord() {
-        await axios.post('/api/lingo/getSolution/' + this.id)
+        await axios.get('/api/lingo/getSolution/' + this.id)
             .then(response => {
                 let attempt;
                 for (let i=0; i < response.data.word; i++) {

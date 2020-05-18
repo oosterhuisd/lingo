@@ -1,9 +1,11 @@
 <?php
 
+use App\Word;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+
     /**
      * Seed the application's database.
      *
@@ -12,28 +14,40 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $baseWordsFp = fopen(base_path() .'/database/seeds/Opentaal/OpenTaal-210G-basis-gekeurd.txt', 'r');
-        while(!feof($baseWordsFp))  {
-            $word = trim(fgets($baseWordsFp));
-            if ($this->isValidForLingo($word)) {
-                (new \App\Word(['word'=>$word, 'length'=>strlen($word), 'offer'=>true]))->save();
-            }
-        }
+        $this->insertFromFile($baseWordsFp, true);
 
         $flexWordsFp = fopen(base_path() .'/database/seeds/Opentaal/OpenTaal-210G-flexievormen.txt', 'r');
-        while(!feof($flexWordsFp))  {
-            $word = trim(fgets($flexWordsFp));
-            if ($this->isValidForLingo($word)) {
-                (new \App\Word(['word'=>$word, 'length'=>strlen($word), 'offer'=>false]))->save();
-            }
-        }
+        $this->insertFromFile($flexWordsFp, false);
+    }
 
+    private function prepareWord($word) {
+        // replace ij ligature
+        $word = preg_replace('/ij/', Word::IJ_LIGATURE, $word);
+        return trim($word);
     }
 
     /**
-     * We consider a word as valid puzzle word if it only contains lowercase letters.
+     * We consider a word as valid puzzle word if it only contains lowercase letters between a-z and ĳ
      * @param $word
      */
     private function isValidForLingo($word) {
-        return preg_match('#^[a-z]+$#', $word);
+        return preg_match('#^[a-z\x{0133}]+$#u', $word);
+    }
+
+    /**
+     * @param $baseWordsFp
+     * @param bool $offerAsSuggestion
+     */
+    private function insertFromFile($baseWordsFp, $offerAsSuggestion = true) {
+        $wordsToInsert = collect();
+        while (!feof($baseWordsFp)) {
+            $word = $this->prepareWord(fgets($baseWordsFp));
+            if ($this->isValidForLingo($word)) {
+                $wordsToInsert->push(['word' => $word, 'length' => Word::lingoLength($word), 'offer' => $offerAsSuggestion]);
+            }
+        }
+        $wordsToInsert->chunk(500)->each(function ($words) {
+            Word::insert($words->toArray());
+        });
     }
 }
