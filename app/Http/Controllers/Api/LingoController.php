@@ -26,6 +26,14 @@ class LingoController extends Controller
 
     /**
      * @param Request $request
+     * @param Word $word
+     */
+    public function getSolution(Request $request, Word $word) {
+        return response()->json(['word'=>$word->word]);
+    }
+
+    /**
+     * @param Request $request
      * @return JsonResponse
      */
     public function validateWord(Request $request) {

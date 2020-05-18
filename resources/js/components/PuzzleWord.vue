@@ -1,15 +1,17 @@
 <template>
-    <div class="card">
+    <div class="card puzzle">
         <div class="card-header">Puzzelwoord</div>
 
         <div class="card-body">
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-lg btn-primary" @click="drawBall" :disabled="!canDraw">
-                    Pak een bal
-                </button>
-                <button class="btn btn-lg btn-danger" @click="giveUp">
-                    Ik geef het op
-                </button>
+            <div class="mb-5">
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-lg btn-primary" @click="drawBall" :disabled="!canDraw">
+                        Pak een bal
+                    </button>
+                    <button class="btn btn-lg btn-danger" @click="giveUp">
+                        Ik geef het op
+                    </button>
+                </div>
             </div>
 
             <div class="d-flex justify-content-center word">
@@ -73,7 +75,7 @@
 .letter {
     width: 65px;
     height: 65px;
-    font-size: 40px;
+    font-size: 45px;
     line-height: 65px;
 }
 </style>

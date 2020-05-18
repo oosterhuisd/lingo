@@ -24,4 +24,11 @@
         background: $letter-tile-background-contains;
         border-radius: 50%;
     }
+
+    .puzzle & {
+        box-shadow: 3px -2px 0px 0px $shadow-color;
+        &.correct {
+            box-shadow: $shadow-color-correct;
+        }
+    }
 }

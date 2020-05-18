@@ -18,9 +18,11 @@ $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
+$shadow-color: #266DBD;
+$shadow-color-correct: #D42A2B;
 $letter-tile-background: #0072D3;
-$letter-tile-shadow: 8px 0px 1px 0px #266DBD;
+$letter-tile-shadow: 8px 0px 1px 0px $shadow-color;
 $letter-tile-background-correct: #F01825;
-$letter-tile-correct-shadow: 8px 0px 1px 0px #D42A2B;
+$letter-tile-correct-shadow: 8px 0px 1px 0px $shadow-color-correct;
 $letter-tile-background-contains: #DEBD38;
 $letter-tile-font-color: #FFF;
