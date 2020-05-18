@@ -127,8 +127,8 @@ class GameController {
                 this.switchTeams();
                 }, transitionDelay);
         });
-        document.addEventListener('PuzzleBadGuess', evt => {
-            Message.push(evt.guess.toUpperCase() + " is helaas niet het goede woord. De beurt gaat naar het andere team, dat begint met een nieuw woord.");
+        document.addEventListener('PuzzleBadGuess', e => {
+            Message.push(e.detail.toUpperCase() + " is helaas niet het goede woord. De beurt gaat naar het andere team, dat begint met een nieuw woord.");
             this.switchTeams();
             this.newLingoRound();
         });

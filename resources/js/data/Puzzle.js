@@ -11,6 +11,8 @@ class Puzzle {
         for (let i=0; i < greenBalls; i++) this.balls.push('green');
         for (let l of this.letters) this.balls.push(l);
 
+        console.log(this.balls);
+
         this.ballsDrawn = 0;
     }
 
@@ -21,8 +23,7 @@ class Puzzle {
             this.completed = true;
             document.dispatchEvent(new Event('PuzzleSuccess'));
         }).catch(error => {
-            document.dispatchEvent(new CustomEvent('PuzzleBadGuess', { guessed: word }));
-            Message.push(word.toUpperCase() + " is niet het juiste woord. Helaas!");
+            document.dispatchEvent(new CustomEvent('PuzzleBadGuess', { detail: word }));
         });
     }
 
@@ -31,11 +32,11 @@ class Puzzle {
         let ball = this.balls[pos];
         this.balls.splice(pos, 1); // remove drawn ball
 
-        if (ball == 'red') {
+        if (ball === 'red') {
             document.dispatchEvent(new Event('RedBallDrawn'));
             return;
-        } else if (ball == 'green') {
-            document.dispatchEvent(new Event('RedBallDrawn'));
+        } else if (ball === 'green') {
+            document.dispatchEvent(new Event('GreenBallDrawn'));
             return;
         }
         this.ballsDrawn++;
