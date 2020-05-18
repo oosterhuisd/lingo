@@ -19,7 +19,7 @@ class PuzzleController extends Controller
         $word = Word::whereLength($wordLength)->inRandomOrder()->limit(1)->first();
         return [
             'id' => $word->id,
-            'letters' => str_shuffle($word->word),
+            'letters' => $word->shuffle(),
         ];
     }
 

@@ -76,6 +76,10 @@ class Lingo {
             return false;
         }
 
+        if (position >= this.wordLength) {
+            return false;
+        }
+
         a.typed[position] = letter;
         this.attempts = _attempts; // this so Vue detects the change and re-renders
         return true;
