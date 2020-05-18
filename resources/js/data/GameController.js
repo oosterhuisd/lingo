@@ -109,7 +109,8 @@ class GameController {
         });
         document.addEventListener('GreenBallDrawn', evt => {
             this.activeTeam.greenBallsDrawn++;
-            Message.push("GROENE BAL!");
+            this.activeTeam.score += 10;
+            Message.push("Dat is een groene bal! " + this.activeTeam.name + ' krijgt er 10 EUR bij.');
         });
         document.addEventListener('PuzzleSuccess', evt => {
             Message.push("Dat is het juiste woord! Jullie krijgen er 100 EUR bij!");
@@ -120,13 +121,15 @@ class GameController {
             } else {
                 this.puzzleGame2 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn);
             }
+            Message.push("De beurt gaat over naar het andere team.");
             setTimeout(() => {
                 this.gamePhase = 'lingo';
                 this.switchTeams();
                 }, transitionDelay);
         });
         document.addEventListener('PuzzleBadGuess', evt => {
-            Message.push(evt.guess.toUpperCase() + " is helaas niet het goede woord. Geeft niks! We gaan gewoon verder met een nieuw woord.");
+            Message.push(evt.guess.toUpperCase() + " is helaas niet het goede woord. De beurt gaat naar het andere team, dat begint met een nieuw woord.");
+            this.switchTeams();
             this.newLingoRound();
         });
         document.addEventListener('PuzzleTimeout', evt => {

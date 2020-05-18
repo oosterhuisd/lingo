@@ -81,8 +81,9 @@
                 if (this.cursorAt >= this.game.wordLength) {
                     return false; // too long
                 }
-                this.game.setChar(this.cursorAt, letter);
-                this.cursorAt++;
+                if (this.game.setChar(this.cursorAt, letter)) {
+                    this.cursorAt++;
+                }
             },
             backspace: function () {
                 if (this.cursorAt > 0) {

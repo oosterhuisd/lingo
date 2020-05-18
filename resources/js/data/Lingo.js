@@ -69,8 +69,16 @@ class Lingo {
     setChar(position, letter) {
         let _attempts = {...this.attempts};
         let a = _attempts[this.currentAttempt];
+
+        if (letter.match(/j/i) && position > 0 && a.typed[position-1].match(/i/i)) {
+            a.typed[position - 1] = 'Ĳ'; // IJ ligatuur
+            this.attempts = _attempts; // this so Vue detects the change and re-renders
+            return false;
+        }
+
         a.typed[position] = letter;
         this.attempts = _attempts; // this so Vue detects the change and re-renders
+        return true;
     }
 
     getCurrentAttempt() {
