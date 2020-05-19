@@ -52,7 +52,7 @@ class GameController {
     }
 
     newLingoRound(delay) {
-        Lingo.newGame(axios, this.currentRound).then(game => {
+        return Lingo.newGame(axios, this.currentRound).then(game => {
             this.lingoGame = game;
             setTimeout(() => {
                 this.gamePhase = 'lingo';
@@ -65,6 +65,7 @@ class GameController {
             Message.push("Dat is het goede woord!");
             this.activeTeam.score += 25;
             this.lingoWordsPlayed++;
+
             setTimeout(() => {
                 this.doPuzzleRound();
             }, transitionDelay);
@@ -83,8 +84,7 @@ class GameController {
         });
         document.addEventListener('LingoWordNotGuessed', evt => {
             Message.push("Geeft niks! We gaan gewoon verder met een nieuw woord.");
-            Lingo.newGame(axios, this.currentRound)
-                .then(game => this.lingoGame = game);
+            this.newLingoRound();
         });
         document.addEventListener('LingoTimeout', evt => {
             console.log("A Lingo timeout was caught");
@@ -116,15 +116,17 @@ class GameController {
             Message.push("Dat is het juiste woord! Jullie krijgen er 100 EUR bij!");
             this.activeTeam.puzzlesCompleted++;
             this.activeTeam.score += 100;
-            if (this.activeTeam == this.team1) {
-                this.puzzleGame1 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn);
+            if (this.activeTeam === this.team1) {
+                Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn)
+                    .then(game => this.puzzleGame1 = game);
             } else {
-                this.puzzleGame2 = Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn);
+                Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn)
+                    .then(game => this.puzzleGame2 = game);
             }
             Message.push("De beurt gaat over naar het andere team.");
             setTimeout(() => {
-                this.gamePhase = 'lingo';
                 this.switchTeams();
+                this.newLingoRound();
                 }, transitionDelay);
         });
         document.addEventListener('PuzzleBadGuess', e => {

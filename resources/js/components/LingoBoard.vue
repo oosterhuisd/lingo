@@ -13,8 +13,8 @@
 
         <div class="attempts" :class="orientation">
             <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
-                <div v-for="index in game.wordLength" :key="index" class="letter" :class="getClass(index - 1, attempt)">
-                    {{ getLetter(index - 1, attempt) }}
+                <div v-for="(letter, index) in attempt" class="letter" :class="getClass(letter)">
+                    <div>{{ letter.get() }}</div>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
             'game.attempts': {
                 deep: true,
                 handler(game) {
-                    console.log("Game changed");
+                    console.log("Attempt changed");
                 }
             }
         },
@@ -57,9 +57,9 @@
             getLetter(position, attempt) {
                 return attempt.typed[position] || attempt.prefill[position] || '';
             },
-            getClass(position, attempt) {
-                if (attempt.correct.includes(position)) return 'correct';
-                if (attempt.contains.includes(position)) return 'contains';
+            getClass(letter) {
+                if (letter.typed === letter.confirmed) return 'correct';
+                if (letter.contained) return 'contains';
             },
             wordGuessed() {
                 document.dispatchEvent(new Event('LingoSuccess'));

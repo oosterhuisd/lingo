@@ -1,4 +1,5 @@
 import Message from "./Message";
+import LingoLetter from "./LingoLetter";
 
 class Lingo {
 
@@ -8,29 +9,32 @@ class Lingo {
         this.extraAttempts = 1;
         this.isExtraAttempt = false;
         this.wordLength = props.length;
-        this.inPlace = props.firstLetter;
-        this.correctLetters = [];
         this.completed = false;
         this.lastResult = {};
+        this.currentAttempt = 0;
         this.attempts = [
-            { prefill: {0: props.firstLetter}, typed: {}, correct: [0], contains: [] },
+            this.newAttempt(),
             this.newAttempt(),
             this.newAttempt(),
             this.newAttempt(),
             this.newAttempt()
         ];
-        this.currentAttempt = 0;
+        // prefill the first position
+        this.getCurrentAttempt()[0].confirmed = props.firstLetter;
+        this.getCurrentAttempt()[0].typed = props.firstLetter;
     }
 
     newAttempt() {
-        return { prefill: {}, typed: {}, correct: [], contains: [] };
+        let letters = [];
+        for (let i = 0; i < this.wordLength; i++) letters.push(new LingoLetter());
+        return letters;
     }
 
     async verifyCurrentAttempt(axios) {
         let game = this;
         let currentAttempt = this.getCurrentAttempt();
         let word = '';
-        for (let l in currentAttempt.typed) word += currentAttempt.typed[l];
+        for (let l of currentAttempt) word += l.typed;
         let result = {};
         this.lastResult = {};
         await axios.post('/api/lingo/validate', {
@@ -38,12 +42,15 @@ class Lingo {
             guess: word
         }).then((response) => {
             if (response.data.win) {
-                for (let i = 0; i < this.wordLength; i++) currentAttempt.correct.push(i);
                 game.completed = true;
                 document.dispatchEvent(new Event('LingoSuccess'));
             } else {
-                currentAttempt.contains = response.data.contains;
-                currentAttempt.correct = response.data.correct;
+                for (let c of response.data.contains) {
+                    currentAttempt[c].contained = true;
+                }
+                for (let c of response.data.correct) {
+                    currentAttempt[c].confirmed = currentAttempt[c].typed;
+                }
             }
         }).catch((error) => {
             if (error.response.data.invalidWord) {
@@ -67,12 +74,12 @@ class Lingo {
     }
 
     setChar(position, letter) {
+        letter = letter.toLowerCase();
         let _attempts = {...this.attempts};
         let a = _attempts[this.currentAttempt];
 
-        if (letter.match(/j/i) && position > 0 && a.typed[position-1].match(/i/i)) {
-            a.typed[position - 1] = '\u0133'; // IJ ligatuur
-            this.attempts = _attempts; // this so Vue detects the change and re-renders
+        if (letter.match(/j/i) && position > 0 && a[position-1].typed.match(/i/i)) {
+            a[position-1].typed = '\u0133'; // IJ ligatuur
             return false;
         }
 
@@ -80,8 +87,7 @@ class Lingo {
             return false;
         }
 
-        a.typed[position] = letter;
-        this.attempts = _attempts; // this so Vue detects the change and re-renders
+        a[position].typed = letter;
         return true;
     }
 
@@ -90,42 +96,43 @@ class Lingo {
     }
 
     nextAttempt() {
-        let nextAttempt = JSON.parse(JSON.stringify(this.getCurrentAttempt())); // deep clone
-        nextAttempt.contains = []; // reset contains list, but keep correct list
-        nextAttempt.correct.forEach(pos => {
-            nextAttempt.prefill[pos] = nextAttempt.prefill[pos] || nextAttempt.typed[pos];
-        }); // existing prefills are kept, only add new ones
-        nextAttempt.typed = {}; // now clear typed buffer
-
-        this.attempts[++this.currentAttempt] = nextAttempt;
-        if (this.currentAttempt == this.maxAttempts) {
+        let lastAttempt = this.getCurrentAttempt();
+        this.currentAttempt++;
+        if (this.currentAttempt === this.maxAttempts) {
             this.isExtraAttempt = true;
-            // refresh for Vue
-            this.attempts = {...this.attempts}; // this so Vue detects the change and re-renders
+            this.attempts.push(this.newAttempt());
+        }
+
+        let nextAttempt = this.getCurrentAttempt();
+        for (let i in lastAttempt) {
+            nextAttempt[i].confirmed = lastAttempt[i].confirmed;
+            if (lastAttempt[i].confirmed) {
+                nextAttempt[i].typed = nextAttempt[i].confirmed;
+            }
         }
     }
 
     async getBonusLetter() {
-        if (this.getCurrentAttempt().correct.length >= this.wordLength - 1) {
+        if (this.getCurrentAttempt().filter(l => l.confirmed).length >= this.wordLength - 1) {
+            console.log("Refusing to give the last letter");
             // never give away the last letter
             return true;
         }
         let attempt = this.getCurrentAttempt();
         let nextEmptyPosition;
         for (let i = 0; i < this.wordLength; i++) {
-            if (!attempt.prefill[i]) {
+            if (!attempt[i].confirmed) {
                 nextEmptyPosition = i;
                 break;
             }
         }
         if (nextEmptyPosition > 0) {
-            await axios.post('/api/lingo/getBonusLetter/' + this.id + '/' + nextEmptyPosition)
-                .then(response => {
-                    attempt.prefill[nextEmptyPosition] = response.data.letter;
-                    attempt.correct.push(nextEmptyPosition);
-                });
+            let response = await axios.post('/api/lingo/getBonusLetter/' + this.id + '/' + nextEmptyPosition);
+            attempt[nextEmptyPosition].confirmed = response.data.letter;
+            attempt[nextEmptyPosition].typed = response.data.letter;
             return true;
         }
+        return false;
     }
 
     async showWord() {

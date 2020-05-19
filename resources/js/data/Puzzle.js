@@ -11,8 +11,6 @@ class Puzzle {
         for (let i=0; i < greenBalls; i++) this.balls.push('green');
         for (let l of this.letters) this.balls.push(l);
 
-        console.log(this.balls);
-
         this.ballsDrawn = 0;
     }
 
@@ -47,7 +45,7 @@ class Puzzle {
             if (this.letters[properPosition] !== ball) { // it's already in the right spot
                 for (let i = 0; i < this.letters.length; i++) {
                     if (this.confirmedPositions.includes(i)) continue;
-                    if (this.letters[i] == ball) { // switcheroo
+                    if (this.letters[i] === ball) { // switcheroo
                         let lt = this.letters;
                         lt = lt.replaceAt(i, this.letters[properPosition]);
                         lt = lt.replaceAt(properPosition, ball);
