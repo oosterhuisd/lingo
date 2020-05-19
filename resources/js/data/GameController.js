@@ -99,12 +99,8 @@ class GameController {
         });
         document.addEventListener('RedBallDrawn', evt => {
             Message.push("Rukkie! Da's de rode bal!");
-            Lingo.newGame(axios, this.currentRound).then(game => {
-                this.lingoGame = game;
-                setTimeout(() => {
-                    this.gamePhase = 'lingo';
-                    this.switchTeams();
-                }, transitionDelay);
+            this.newLingoRound().then(()=> {
+                this.switchTeams();
             });
         });
         document.addEventListener('GreenBallDrawn', evt => {
@@ -124,10 +120,7 @@ class GameController {
                     .then(game => this.puzzleGame2 = game);
             }
             Message.push("De beurt gaat over naar het andere team.");
-            setTimeout(() => {
-                this.switchTeams();
-                this.newLingoRound();
-                }, transitionDelay);
+            this.newLingoRound().then(() => { this.switchTeams(); });
         });
         document.addEventListener('PuzzleBadGuess', e => {
             Message.push(e.detail.toUpperCase() + " is helaas niet het goede woord. De beurt gaat naar het andere team, dat begint met een nieuw woord.");

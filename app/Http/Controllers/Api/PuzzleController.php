@@ -25,9 +25,9 @@ class PuzzleController extends Controller
 
     public function getLetterPosition(Request $request, Word $word, $letter) {
         $knownPositions = $request->input('knownPositions') ?? [];
-        for ($i = 0; $i < strlen($word->word); $i++) {
+        for ($i = 0; $i < $word->length; $i++) {
             if (in_array($i, $knownPositions)) continue;
-            if ($word->word[$i] === $letter) {
+            if ($word->getLetter($i) === $letter) {
                 return response()->json(['position' => $i]);
             }
         }
