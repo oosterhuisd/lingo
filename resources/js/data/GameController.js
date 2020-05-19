@@ -65,7 +65,12 @@ class GameController {
             Message.push("Dat is het goede woord!");
             this.activeTeam.score += 25;
             this.lingoWordsPlayed++;
-
+            if (this.lingoWordsPlayed === 4) {
+                this.currentRound++; // go to 6 letter words
+            }
+            if (this.lingoWordsPlayed === 10) {
+                this.currentRound++; // go to 7 letter round
+            }
             setTimeout(() => {
                 this.doPuzzleRound();
             }, transitionDelay);
