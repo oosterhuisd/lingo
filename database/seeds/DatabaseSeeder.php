@@ -1,7 +1,7 @@
 <?php
 
-use App\Word;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('words')->truncate();
         $this->call(WordSeeder::class);
     }
 

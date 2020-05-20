@@ -6,10 +6,10 @@ use Illuminate\Database\Seeder;
 class WordSeeder extends Seeder
 {
     public function run() {
-        $baseWordsFp = fopen(base_path() .'/database/seeds/Opentaal/OpenTaal-210G-basis-gekeurd.txt', 'r');
+        $baseWordsFp = fopen(base_path() .'/database/seeds/Opentaal/2.20/basiswoorden-gekeurd.txt', 'r');
         $this->insertFromFile($baseWordsFp, true);
 
-        $flexWordsFp = fopen(base_path() .'/database/seeds/Opentaal/OpenTaal-210G-flexievormen.txt', 'r');
+        $flexWordsFp = fopen(base_path() .'/database/seeds/Opentaal/2.20/flexies-ongekeurd.txt', 'r');
         $this->insertFromFile($flexWordsFp, false);
     }
 
