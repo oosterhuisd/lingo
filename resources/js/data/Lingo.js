@@ -37,8 +37,7 @@ class Lingo {
         for (let l of currentAttempt) word += l.typed;
         let result = {};
         this.lastResult = {};
-        await axios.post('/api/lingo/validate', {
-            id: this.id,
+        await axios.post('/api/lingo/validate/' + this.id, {
             guess: word
         }).then((response) => {
             if (response.data.win) {

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 //Route::group(['middleware'=>['auth:api']], function() {
 Route::group([], function() {
     Route::get('/lingo/newWord/{wordLength}', 'Api\LingoController@newWord');
-    Route::post('/lingo/validate', 'Api\LingoController@validateWord');
+    Route::post('/lingo/validate/{word}', 'Api\LingoController@validateGuess');
     Route::post('/lingo/getBonusLetter/{word}/{position}', 'Api\LingoController@getBonusLetter');
     Route::get('/lingo/getSolution/{word}', 'Api\LingoController@getSolution');
 

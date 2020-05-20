@@ -36,9 +36,7 @@ class LingoController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function validateWord(Request $request) {
-        $word = Word::find($request->input('id'));
-
+    public function validateGuess(Request $request, Word $word) {
         // do some basic cleanup
         $guess = mb_strtolower(trim($request->input('guess')));
 
@@ -62,14 +60,25 @@ class LingoController extends Controller
         // mark correct letters
         $correct = [];
         $contains = [];
+        $matchingLetters = '';
         for ($i = 0; $i < Word::lingoLength($guess); $i++) {
             $letter = Str::substr($guess, $i, 1);
             if ($word->getLetter($i) === $letter) {
                 $correct []= $i;
-            } else if (Str::contains($word->word, $letter)) {
-                $contains []= $i;
+                $matchingLetters .= $letter;
             }
         }
+        for ($i = 0; $i < Word::lingoLength($guess); $i++) {
+            if (in_array($i, $correct)) continue;
+            $letter = Str::substr($guess, $i, 1);
+
+            // contains should only contain as many matches of a letter as are actually in the word
+            if (Str::contains($word->word, $letter) && Str::substrCount($matchingLetters, $letter) < Str::substrCount($word->word, $letter)) {
+                $contains []= $i;
+                $matchingLetters .= $letter;
+            }
+        }
+
         return response()->json([
             'correct' => $correct,
             'contains' => $contains

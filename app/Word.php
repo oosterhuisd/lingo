@@ -31,6 +31,10 @@ class Word extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'length' => 'integer'
+    ];
+
     // the lowercase ĳ character in Unicode
     const IJ_LIGATURE = "\u{0133}";
 
