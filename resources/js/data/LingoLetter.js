@@ -5,6 +5,7 @@ class LingoLetter {
         this.typed = '';
         this.contained = false;
         this.checked = false;
+        this.animate = false;
     }
 
     get() {

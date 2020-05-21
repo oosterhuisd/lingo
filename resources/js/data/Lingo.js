@@ -5,7 +5,6 @@ class Lingo {
 
     constructor(props, resultAnimator) {
         this.id = props.id; // the id of the word we are looking for
-        console.log(resultAnimator);
         this.resultAnimator = resultAnimator;
         this.maxAttempts = 5;
         this.extraAttempts = 1;
@@ -22,6 +21,7 @@ class Lingo {
             this.newAttempt()
         ];
         // prefill the first position
+        for (let i in this.getCurrentAttempt()) this.getCurrentAttempt()[i].typed = '.'; // prefill
         this.getCurrentAttempt()[0].confirmed = props.firstLetter;
         this.getCurrentAttempt()[0].typed = props.firstLetter;
     }
@@ -63,17 +63,30 @@ class Lingo {
             }
             this.lastResult = result;
         });
-        await this.resultAnimator.handleLingoGuess(currentAttempt);
-        if (game.completed) {
-            document.dispatchEvent(new Event('LingoSuccess'));
+
+        // now process the result
+        if (result.invalidWord || result.unknownWord) {
+            await this.resultAnimator.lingoAttemptFailed(currentAttempt);
+            currentAttempt.forEach(l => { if (!l.confirmed) l.typed = '.' });
+            this.currentAttempt--;
+            // the turn will be handed over to the other team by the game controller
+            // but it should not count, so the other team plays the same turn again
         } else {
-            if (this.isExtraAttempt) { // this was an extra attempt, you won't lose your turn
-                this.showWord();
-                return document.dispatchEvent(new Event('LingoWordNotGuessed'));
+            await this.resultAnimator.lingoAttemptCompleted(currentAttempt);
+            if (game.completed) {
+                // flip the letters etc
+                await this.resultAnimator.lingoWordGuessed(currentAttempt);
+                document.dispatchEvent(new Event('LingoSuccess'));
+                return result;
+            } else {
+                if (this.isExtraAttempt) { // this was an extra attempt, you won't lose your turn
+                    await this.showWord();
+                    return document.dispatchEvent(new Event('LingoWordNotGuessed'));
+                }
             }
-            this.nextAttempt();
-            document.dispatchEvent(new Event('LingoTurnCompleted'));
         }
+        this.nextAttempt();
+        document.dispatchEvent(new Event('LingoTurnCompleted'));
         return result;
     }
 
@@ -138,16 +151,11 @@ class Lingo {
     }
 
     async showWord() {
-        await axios.get('/api/lingo/getSolution/' + this.id)
-            .then(response => {
-                let attempt;
-                for (let i=0; i < response.data.word; i++) {
-                    attempt.prefill[i] = response.data.word[i];
-                    attempt.correct.push(i);
-                }
-                this.attempts.push(attempt);
-            });
-       return true;
+        let response = await axios.get('/api/lingo/getSolution/' + this.id)
+        let newLine = this.newAttempt();
+        this.attempts.push(newLine);
+
+        return this.resultAnimator.revealSolution(response.data.word, newLine);
     }
 
     undo() {

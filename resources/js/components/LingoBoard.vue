@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-header">Lingo</div>
+        <div class="card-header"><h1>Lingo</h1></div>
 
         <div class="card-body lingo-board">
             <button class="btn btn-primary" @click="wordGuessed">
@@ -14,7 +14,8 @@
         <div class="attempts" :class="orientation">
             <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
                 <div v-for="(letter, index) in attempt" class="letter" :class="getClass(letter)">
-                    <div>{{ letter.get() }}</div>
+                    <div class="face front">{{ letter.get() }}</div>
+                    <div class="face back"></div>
                 </div>
             </div>
         </div>
@@ -59,8 +60,14 @@
             },
             getClass(letter) {
                 if (!letter.checked) return '';
-                if (letter.typed === letter.confirmed) return 'correct';
                 if (letter.contained) return 'contains';
+                if (letter.typed === letter.confirmed) {
+                    let css = 'correct';
+                    if (letter.animate) { // this will create the "sweep" effect
+                        css += ' animate';
+                    }
+                    return css;
+                }
             },
             wordGuessed() {
                 document.dispatchEvent(new Event('LingoSuccess'));
@@ -106,6 +113,25 @@
         }
         &.right {
             /*transform: rotate3d(0, 1, -0.1, 12deg)*/
+        }
+    }
+    .letter {
+        position: relative;
+        .face {
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            backface-visibility: hidden;
+            &.back {
+                transform: rotateY(180deg);
+            }
+        }
+        &.animate {
+            .face {
+                transform: rotateY(360deg);
+            }
         }
     }
 </style>
