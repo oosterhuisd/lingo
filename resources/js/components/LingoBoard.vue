@@ -15,7 +15,6 @@
             <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
                 <div v-for="(letter, index) in attempt" class="letter" :class="getClass(letter)">
                     <div class="face front">{{ letter.get() }}</div>
-                    <div class="face back"></div>
                 </div>
             </div>
         </div>
@@ -114,21 +113,11 @@
     }
     .letter {
         position: relative;
-        .face {
-            transition: transform 0.5s;
-            transform-style: preserve-3d;
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            backface-visibility: hidden;
-            &.back {
-                transform: rotateY(180deg);
-            }
-        }
+        transition: transform 0.3s;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
         &.animate {
-            .face {
-                transform: rotateY(360deg);
-            }
+            transform: rotateY(360deg);
         }
     }
 </style>

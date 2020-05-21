@@ -1,10 +1,7 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid p-5">
         <div class="row justify-content-center" v-if="this.initialized">
 
-            <div class="col-md-2">
-                <team :name="'Team 1'" :data="gameController.team1" :isPlaying="team1Active"></team>
-            </div>
             <div class="col-md-8">
                 <lingo-board v-if="doLingo"
                              :game="gameController.lingoGame"
@@ -18,6 +15,14 @@
                     :game="puzzleInstance">
                 </puzzle-word>
                 <bingo-card v-if="gameController.gamePhase == 'bingo'"></bingo-card>
+            </div>
+        </div>
+        <div class="fixed-bottom d-flex justify-content-between">
+            <div class="col-md-2">
+                <team :name="'Team 1'" :data="gameController.team1" :isPlaying="team1Active"></team>
+            </div>
+            <div class="col-md-6">
+                <img src="/images/jan.svg" class="host" title="" alt="Host" />
             </div>
             <div class="col-md-2">
                 <team :name="'Team 2'" :data="gameController.team2" :isPlaying="team2Active"></team>
@@ -125,3 +130,12 @@
         }
     }
 </script>
+<style lang="scss" scoped>
+    .container-fluid {
+        height: 100vh;
+    }
+    img.host {
+        max-width: 300px;
+        max-height: 200px;
+    }
+</style>

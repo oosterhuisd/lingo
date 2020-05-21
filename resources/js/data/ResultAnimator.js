@@ -3,11 +3,11 @@ import Sound from "./Sound";
 class ResultAnimator {
 
     constructor() {
-        this.lingoFail = new Sound('/media/sounds/lingo-invalid-word.mp3');
-        this.lingoTimeout = new Sound('/media/sounds/lingo-invalid-word.mp3');
-        this.lingoLetterCorrect = new Sound('/media/sounds/lingo-letter-correct.mp3');
-        this.lingoLetterContained = new Sound('/media/sounds/lingo-letter-wrong.mp3');
-        this.lingoLetterWrong = new Sound('/media/sounds/lingo-letter-wrong.mp3');
+        this.lingoFail = new Sound('/sounds/lingo-invalid-word.mp3');
+        this.lingoTimeout = new Sound('/sounds/lingo-invalid-word.mp3');
+        this.lingoLetterCorrect = new Sound('/sounds/lingo-letter-correct.mp3');
+        this.lingoLetterContained = new Sound('/sounds/lingo-letter-wrong.mp3');
+        this.lingoLetterWrong = new Sound('/sounds/lingo-letter-wrong.mp3');
     }
 
     async lingoAttemptFailed(attempt) {

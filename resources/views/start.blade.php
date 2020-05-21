@@ -13,11 +13,6 @@
 
 </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            <nav class="navbar sticky-top navbar-light bg-light">
-                <a class="navbar-brand" href="#">Lingo</a>
-            </nav>
-        </div>
         <div id="app">
             <game-controller></game-controller>
         </div>

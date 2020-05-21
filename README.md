@@ -112,7 +112,8 @@ Todo:
 - [ ]  Messaging
 - [ ]  Sounds & animations
 - [ ]  Fine tune game words (exclude uncommon words)
-- [ ]  Easy mode 
+- [ ]  Easy (kids) mode
+- [ ]  Switch turns between individual players  
 
 ## Maintainers
 
