@@ -16,7 +16,7 @@ class PuzzleController extends Controller
      * @return array
      */
     public function newWord(Request $request, int $wordLength) {
-        $word = Word::whereLength($wordLength)->inRandomOrder()->limit(1)->first();
+        $word = Word::gameWords()->length($wordLength)->inRandomOrder()->limit(1)->first();
         return [
             'id' => $word->id,
             'letters' => $word->shuffle(),

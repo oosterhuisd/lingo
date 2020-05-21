@@ -58,6 +58,7 @@
                 return attempt.typed[position] || attempt.prefill[position] || '';
             },
             getClass(letter) {
+                if (!letter.checked) return '';
                 if (letter.typed === letter.confirmed) return 'correct';
                 if (letter.contained) return 'contains';
             },

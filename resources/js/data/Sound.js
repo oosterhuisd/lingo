@@ -8,7 +8,9 @@ class Sound {
         document.body.appendChild(this.sound);
     }
     play(){
+        this.sound.currentTime = 0; // reset the time
         this.sound.play();
+
     }
     stop(){
         this.sound.pause();

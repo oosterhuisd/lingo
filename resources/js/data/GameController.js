@@ -1,6 +1,7 @@
 import Lingo from "./Lingo";
 import Puzzle from "./Puzzle";
 import Message from "./Message";
+import ResultAnimator from "./ResultAnimator";
 
 let transitionDelay = 0;
 
@@ -15,19 +16,21 @@ class GameController {
         this.puzzleGame1 = null;
         this.puzzleGame2 = null;
 
+        this.resultAnimator = new ResultAnimator();
+
         this.lingoWordsPlayed = 0;
     }
 
     getActiveGame() {
-        if (this.gamePhase == 'lingo') {
+        if (this.gamePhase === 'lingo') {
             return this.lingoGame;
-        } else if (this.gamePhase == 'puzzle') {
-            if (this.activeTeam == this.team1) {
+        } else if (this.gamePhase === 'puzzle') {
+            if (this.activeTeam === this.team1) {
                 return this.puzzleGame1;
             } else {
                 return this.puzzleGame2;
             }
-        } else if (this.gamePhase == 'bingo') {
+        } else if (this.gamePhase === 'bingo') {
             // return this.bingoGame;
         }
         return null;
@@ -52,7 +55,7 @@ class GameController {
     }
 
     newLingoRound(delay) {
-        return Lingo.newGame(axios, this.currentRound).then(game => {
+        return Lingo.newGame(axios, this.currentRound, this.resultAnimator).then(game => {
             this.lingoGame = game;
             setTimeout(() => {
                 this.gamePhase = 'lingo';

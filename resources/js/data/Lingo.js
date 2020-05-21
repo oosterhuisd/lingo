@@ -3,8 +3,10 @@ import LingoLetter from "./LingoLetter";
 
 class Lingo {
 
-    constructor(props) {
+    constructor(props, resultAnimator) {
         this.id = props.id; // the id of the word we are looking for
+        console.log(resultAnimator);
+        this.resultAnimator = resultAnimator;
         this.maxAttempts = 5;
         this.extraAttempts = 1;
         this.isExtraAttempt = false;
@@ -42,7 +44,7 @@ class Lingo {
         }).then((response) => {
             if (response.data.win) {
                 game.completed = true;
-                document.dispatchEvent(new Event('LingoSuccess'));
+                currentAttempt.forEach(l => { l.confirmed = l.typed });
             } else {
                 for (let c of response.data.contains) {
                     currentAttempt[c].contained = true;
@@ -61,7 +63,10 @@ class Lingo {
             }
             this.lastResult = result;
         });
-        if (!game.completed) {
+        await this.resultAnimator.handleLingoGuess(currentAttempt);
+        if (game.completed) {
+            document.dispatchEvent(new Event('LingoSuccess'));
+        } else {
             if (this.isExtraAttempt) { // this was an extra attempt, you won't lose your turn
                 this.showWord();
                 return document.dispatchEvent(new Event('LingoWordNotGuessed'));
@@ -105,9 +110,7 @@ class Lingo {
         let nextAttempt = this.getCurrentAttempt();
         for (let i in lastAttempt) {
             nextAttempt[i].confirmed = lastAttempt[i].confirmed;
-            if (lastAttempt[i].confirmed) {
-                nextAttempt[i].typed = nextAttempt[i].confirmed;
-            }
+            nextAttempt[i].typed = nextAttempt[i].confirmed || '.';
         }
     }
 
@@ -164,9 +167,9 @@ class Lingo {
         }
     }
 
-    static async newGame(axios, round) {
+    static async newGame(axios, round, resultAnimator) {
         const response = await axios.get(`/api/lingo/newWord/` + Lingo.getWordLengthForRound(round));
-        return new Lingo(response.data);
+        return new Lingo(response.data, resultAnimator);
     }
 
 }

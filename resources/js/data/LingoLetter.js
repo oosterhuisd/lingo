@@ -4,6 +4,7 @@ class LingoLetter {
         this.confirmed = letter;
         this.typed = '';
         this.contained = false;
+        this.checked = false;
     }
 
     get() {

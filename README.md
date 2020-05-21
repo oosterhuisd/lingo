@@ -3,7 +3,9 @@
 Lingo is a TV game that features 2 opposing teams who compete by guessing words. The winning team 
 plays a final in which the amount of 2500 EUR can be earned by making bingo.
 
-The main objectives of the game:
+The main objective of the game is to make as much money by playing word games.
+
+### Game elements:
 
 * Play Word lingo (5, 6 or 7 letter words) rounds
 * Play Word finder (11, 12 or 13 letter words) after winning a lingo round
@@ -11,7 +13,7 @@ The main objectives of the game:
 * A final round in which 1 team guesses as many 6 letter words and earns an according amount of 
 draws of numbered balls to make bingo on a prefilled card
 
-## Rules
+## Rules (in dutch)
 Het team dat aan de beurt is krijgt vijf pogingen om een woord te raden, waarvan de beginletter gegeven is. De spelers 
 krijgen hiervoor acht seconden bedenktijd per poging waarbij ze het woord ook moeten spellen. De lange Ĳ telt als één 
 letter. Het team mag niet overleggen. Bij elke poging wordt aangegeven welke letters op de juiste plaats staan 
@@ -22,15 +24,15 @@ raden woord ontbreekt kan het team geen bonusletter krijgen.
 
 Ongeldige woorden zijn:
 
-Woorden die niet bestaan
-Woorden die niet zelfstandig kunnen worden gebruikt
-Woorden die met een hoofdletter beginnen, zoals eigennamen
-Woorden die zijn samengesteld
-Woorden met een apostrof
-Woorden die al eerder zijn ingevoerd in dezelfde beurt
-Woorden met een verkeerde beginletter
-Woorden die niet uit het gegeven aantal letters bestaan
-Woorden die verkeerd gespeld zijn
+*  Woorden die niet bestaan
+*  Woorden die niet zelfstandig kunnen worden gebruikt
+*  Woorden die met een hoofdletter beginnen, zoals eigennamen
+*  Woorden die zijn samengesteld
+*  Woorden met een apostrof
+*  Woorden die al eerder zijn ingevoerd in dezelfde beurt
+*  Woorden met een verkeerde beginletter
+*  Woorden die niet uit het gegeven aantal letters bestaan
+*  Woorden die verkeerd gespeld zijn
 
 Vanaf 2019 zijn de Lingokaarten vervangen door het puzzelwoord, een woord van 11, 12 of 13 letters. Op de blauwe ballen 
 in de ballenbak staan letters in plaats van getallen. Het team dat een woord raadt mag twee ballen pakken. De letters 
@@ -73,12 +75,11 @@ kaart).
 Vanaf 2019 bevat de kaart zowel even als oneven getallen en is 24, 25, 50 of 51 de eerste Lingokans. Vervolgens mag het 
 team net zoveel ballen trekken als het aantal woorden dat ze in 2½ minuut hebben geraden. De ballenbak bevat 15 
 blauwe ballen met getallen, ~~een zilveren bal (van 2009 t/m 2014), een roze bal (van 2012 t/m 2014),~~ 
-een gouden bal (vanaf 2019) en een zwarte bal (vanaf 2020). Het halen van Lingo leverde tot 2014 per geraden woord 1000 
-euro op. Vanaf 2019 levert het halen van Lingo 2500 euro op. Als de zilveren bal getrokken werd, kon het team kiezen: 
-ze stoppen en kregen de helft van het te winnen bedrag of speelden verder. Het trekken van ~~de roze bal en vanaf 2019~~ 
-de gouden bal levert een extra prijs op(vanaf 2019 een vakantie t.w.w. 1500 euro). Deze prijs wordt ook gewonnen door 
-drie winnaars van de Vriendenloterij wier namen in beeld verschijnen en vanaf 2019 door slechts één winnaar van de 
-Vriendenloterij wiens lotnummer in beeld verschijnt voordat de finale begint. Als de zwarte bal getrokken wordt, krijgen 
+een gouden bal (vanaf 2019) en een zwarte bal (vanaf 2020). Vanaf 2019 levert het halen van Lingo 2500 euro op.
+Het trekken van de gouden bal levert een extra prijs op (vanaf 2019 een vakantie t.w.w. 1500 euro). Deze prijs wordt ook 
+gewonnen door drie winnaars van de Vriendenloterij wier namen in beeld verschijnen en vanaf 2019 door slechts één winnaar 
+van de Vriendenloterij wiens lotnummer in beeld verschijnt voordat de finale begint. Als de zwarte bal getrokken wordt, 
+krijgen 
 beide kandidaten een complete keuken. Als het niet lukt om Lingo te halen, krijgen de kandidaten het in de eerdere 
 rondes gewonnen geld mee naar huis. Vanaf 2019 mogen ze dan ook terugkomen in de volgende uitzending om meer geld te 
 verdienen.
@@ -100,9 +101,9 @@ Bron: [Wikipedia.org](https://nl.wikipedia.org/wiki/Lingo)
 Todo:
 
 - [x]  Handle keyboard input
-- [ ]  Lingo rounds
-- [ ]  ij ligature
-- [ ]  Word finder
+- [x]  Lingo rounds
+- [x]  ij ligature
+- [x]  Puzzle round
 - [ ]  Final round
 - [x]  Seed database
 - [ ]  Enter team member names
@@ -110,6 +111,8 @@ Todo:
 - [ ]  Layout
 - [ ]  Messaging
 - [ ]  Sounds & animations
+- [ ]  Fine tune game words (exclude uncommon words)
+- [ ]  Easy mode 
 
 ## Maintainers
 
