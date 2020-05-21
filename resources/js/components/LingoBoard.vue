@@ -55,9 +55,6 @@
         computed: {
         },
         methods: {
-            getLetter(position, attempt) {
-                return attempt.typed[position] || attempt.prefill[position] || '';
-            },
             getClass(letter) {
                 if (!letter.checked) return '';
                 if (letter.contained) return 'contains';
@@ -97,7 +94,7 @@
             },
             backspace: function () {
                 if (this.cursorAt > 0) {
-                    this.game.setChar(--this.cursorAt, '');
+                    this.game.setChar(--this.cursorAt, ' ');
                 }
             }
         },

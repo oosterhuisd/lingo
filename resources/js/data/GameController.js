@@ -88,7 +88,11 @@ class GameController {
                   || this.lingoGame.lastResult.unknownWord
                   || this.lingoGame.isExtraAttempt) {
                 this.switchTeams(true);
+            } else if (this.currentRound === 3) {
+                // in the third round, you switch after every turn
+                this.switchTeams(false);
             }
+
         });
         document.addEventListener('LingoWordNotGuessed', evt => {
             Message.push("Geeft niks! We gaan gewoon verder met een nieuw woord.");
