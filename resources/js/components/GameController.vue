@@ -93,7 +93,7 @@
                 let controller = this;
                 document.onkeydown = function(evt) {
                     let activeGame = controller.getActiveGameElement();
-                    if (!activeGame) {
+                    if (!activeGame || activeGame.completed === true) {
                         return true;
                     }
 

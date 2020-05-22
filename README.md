@@ -106,14 +106,20 @@ Todo:
 - [x]  Puzzle round
 - [ ]  Final round
 - [x]  Seed database
+- [ ]  Time limits
 - [ ]  Enter team member names
-- [ ]  Persist games in session/db
 - [ ]  Layout
 - [ ]  Messaging
+- [ ]  Switch turns between individual players  
 - [ ]  Sounds & animations
+- [ ]  Persist games in session/db
 - [ ]  Fine tune game words (exclude uncommon words)
 - [ ]  Easy (kids) mode
-- [ ]  Switch turns between individual players  
+
+Known issues:
+
+-  Key events during an animation can cause unexpected results
+-  The ij ligature is not properly handled when submitting the puzzle word 
 
 ## Maintainers
 
@@ -121,4 +127,8 @@ Daniël Oosterhuis [daniel@atane.nl](daniel@atane.nl)
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This is free software, distributed under the terms of the [GNU] General Public License as published 
+by the Free Software Foundation, version 3 of the License (or any later version).  For more information,
+see the file LICENSE. 
+
+This game is not affiliated with SBS6 or any other license holder of the dutch TV show "Lingo".
