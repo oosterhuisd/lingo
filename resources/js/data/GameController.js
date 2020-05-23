@@ -38,7 +38,7 @@ class GameController {
     }
 
     switchTeams(getBonusLetter) {
-        this.activeTeam = (this.activeTeam == this.team1) ? this.team2 : this.team1;
+        this.activeTeam = (this.activeTeam === this.team1) ? this.team2 : this.team1;
         Message.push("De beurt gaat naar " + this.activeTeam.name + ".");
         if (getBonusLetter === true && this.getActiveGame() instanceof Lingo) {
             if (this.lingoGame.getBonusLetter()) {

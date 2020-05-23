@@ -9,7 +9,7 @@ class LingoLetter {
     }
 
     get() {
-        return this.typed !== '' ? this.typed : this.confirmed;
+        return this.typed ? this.typed : this.confirmed;
     }
 }
 

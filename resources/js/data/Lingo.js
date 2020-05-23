@@ -24,7 +24,7 @@ class Lingo {
         // prefill the first position
         for (let i in this.getCurrentAttempt()) this.getCurrentAttempt()[i].typed = '.'; // prefill
         this.getCurrentAttempt()[0].confirmed = props.firstLetter;
-        this.getCurrentAttempt()[0].typed = props.firstLetter;
+        this.getCurrentAttempt()[0].typed = '';
     }
 
     newAttempt() {
@@ -40,7 +40,8 @@ class Lingo {
         for (let l of currentAttempt) word += l.typed;
         let result = {};
         this.lastResult = {};
-        if (word.trim() === '') { // TODO not correct
+
+        if (word.replace(/[^a-z]/gi, '') === '') { //
             this.lastResult.timeout = true;
         } else {
             await axios.post('/api/lingo/validate/' + this.id, {
@@ -73,14 +74,16 @@ class Lingo {
 
         // now process the result
         if (this.lastResult.timeout) {
-            console.log("TIMOUT!");
-            currentAttempt.forEach(l => { if (!l.confirmed) l.typed = ' ' });
+            await this.resultAnimator.lingoAttemptFailed(currentAttempt);
+            currentAttempt.forEach(l => { l.typed = l.confirmed ? '' : '' });
         } else if (result.invalidWord || result.unknownWord) {
             await this.resultAnimator.lingoAttemptFailed(currentAttempt);
-            currentAttempt.forEach(l => { if (!l.confirmed) l.typed = '.' });
-            this.currentAttempt--;
-            // the turn will be handed over to the other team by the game controller
-            // but it should not count, so the other team plays the same turn again
+            currentAttempt.forEach(l => { l.typed = l.confirmed ? '' : '.' });
+            if (!this.isExtraAttempt) {
+                // the turn will be handed over to the other team by the game controller
+                // but it should not count, so the other team plays the same turn again
+                this.currentAttempt--;
+            }
         } else {
             await this.resultAnimator.lingoAttemptCompleted(currentAttempt);
             if (game.completed) {
@@ -88,12 +91,12 @@ class Lingo {
                 await this.resultAnimator.lingoWordGuessed(currentAttempt);
                 document.dispatchEvent(new Event('LingoSuccess'));
                 return result;
-            } else {
-                if (this.isExtraAttempt) { // this was an extra attempt, you won't lose your turn
-                    await this.showWord();
-                    return document.dispatchEvent(new Event('LingoWordNotGuessed'));
-                }
             }
+
+        }
+        if (this.isExtraAttempt) { // this was an extra attempt, you won't lose your turn
+            await this.showWord();
+            return document.dispatchEvent(new Event('LingoWordNotGuessed'));
         }
         this.nextAttempt();
         document.dispatchEvent(new Event('LingoTurnCompleted'));
@@ -131,9 +134,10 @@ class Lingo {
         }
 
         let nextAttempt = this.getCurrentAttempt();
+        console.log(nextAttempt, lastAttempt);
         for (let i in lastAttempt) {
             nextAttempt[i].confirmed = lastAttempt[i].confirmed;
-            nextAttempt[i].typed = nextAttempt[i].confirmed || '.';
+            nextAttempt[i].typed = nextAttempt[i].confirmed ? '' : '.';
         }
     }
 
@@ -154,7 +158,7 @@ class Lingo {
         if (nextEmptyPosition > 0) {
             let response = await axios.post('/api/lingo/getBonusLetter/' + this.id + '/' + nextEmptyPosition);
             letter.confirmed = response.data.letter;
-            letter.typed = response.data.letter;
+            letter.typed = '';
             return await this.resultAnimator.bonusLetterReveal(attempt[nextEmptyPosition]);
         }
         return false;
