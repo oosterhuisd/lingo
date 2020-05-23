@@ -7,7 +7,7 @@
         <div class="card-body">
             <div>{{ player1 }} en {{ player2 }}</div>
         </div>
-        <div class="card-footer">Score: {{ score }}</div>
+        <div class="card-body h2 scoreboard text-center">€ {{ score }}</div>
         <div v-for="i in data.greenBallsDrawn" class="green-ball">
 
         </div>
@@ -49,7 +49,6 @@
             }
         },
         mounted() {
-            Message.push(this.name + ' initiated')
         }
     }
 </script>

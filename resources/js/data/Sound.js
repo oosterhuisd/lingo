@@ -9,11 +9,10 @@ class Sound {
     }
     play(){
         this.sound.currentTime = 0; // reset the time
-        this.sound.play();
-
+        return this.sound.play();
     }
     stop(){
-        this.sound.pause();
+        return this.sound.pause();
     }
 }
 export default Sound;

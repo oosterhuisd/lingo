@@ -3,15 +3,18 @@ import Sound from "./Sound";
 class ResultAnimator {
 
     constructor() {
-        this.lingoFail = new Sound('/sounds/lingo-invalid-word.mp3');
-        this.lingoTimeout = new Sound('/sounds/lingo-invalid-word.mp3');
-        this.lingoLetterCorrect = new Sound('/sounds/lingo-letter-correct.mp3');
-        this.lingoLetterContained = new Sound('/sounds/lingo-letter-wrong.mp3');
-        this.lingoLetterWrong = new Sound('/sounds/lingo-letter-wrong.mp3');
+        this.lingoFail = new Sound('/media/sounds/lingo-invalid-word.mp3');
+        this.lingoTimeout = new Sound('/media/sounds/lingo-invalid-word.mp3');
+        this.lingoLetterCorrect = new Sound('/media/sounds/lingo-letter-correct.ogg');
+        this.lingoLetterContained = new Sound('/media/sounds/lingo-letter-contained.ogg');
+        this.lingoLetterWrong = new Sound('/media/sounds/lingo-letter-wrong.mp3');
+        this.lingoBonusLetterReveal = new Sound('/media/sounds/lingo-bonus-letter-reveal.ogg');
+        this.soundLingoWordGuessed = new Sound('/media/sounds/lingo-word-guessed.ogg');
     }
 
     async lingoAttemptFailed(attempt) {
-        return this.lingoTimeout.play();
+        return this.lingoTimeout.play()
+            .then(() => new Promise(resolve => setTimeout(resolve, 1000)));
     }
 
     async lingoAttemptCompleted(attempt, delayAfterComplete) {
@@ -46,7 +49,9 @@ class ResultAnimator {
         let sweepDelay = 200;
         let timeToEnjoyTheMoment = 1000;
         let promise = Promise.resolve();
+
         for (let i=0; i < 2; i++) { // flip twice
+            this.soundLingoWordGuessed.play();
             for (let letter of attempt) { /* @var LingoLetter letter */
                 promise = promise.then(() => {
                     letter.animate = !letter.animate;
@@ -75,6 +80,21 @@ class ResultAnimator {
         }
         // some more delay
         promise = promise.then(() => this.delay(timeToEnjoyTheMoment));
+        return promise;
+    }
+
+    /**
+     * @param LingoLetter letter
+     * @returns {Promise<void>}
+     */
+    async bonusLetterReveal(letter) {
+        let delay = 400;
+        let promise = Promise.resolve();
+        promise = promise.then(() => {
+            this.lingoBonusLetterReveal.play();
+            letter.animate = true;
+            return new Promise((resolve, reject) => setTimeout(resolve, delay));
+        });
         return promise;
     }
 

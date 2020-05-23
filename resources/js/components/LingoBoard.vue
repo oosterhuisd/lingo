@@ -1,15 +1,13 @@
 <template>
-    <div class="card">
-        <div class="card-header"><h1>Lingo</h1></div>
-
-        <div class="card-body lingo-board">
-            <button class="btn btn-primary" @click="wordGuessed">
-                Woord is geraden
-            </button>
-            <button class="btn btn-secondary" @click="invalidWord">
-                Verkeerd woord
-            </button>
-        </div>
+    <div class="lingo-board">
+<!--        <div class="debug">-->
+<!--            <button class="btn btn-primary" @click="wordGuessed">-->
+<!--                Woord is geraden-->
+<!--            </button>-->
+<!--            <button class="btn btn-secondary" @click="invalidWord">-->
+<!--                Verkeerd woord-->
+<!--            </button>-->
+<!--        </div>-->
 
         <div class="attempts" :class="orientation">
             <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
@@ -55,14 +53,14 @@
         },
         methods: {
             getClass(letter) {
-                if (!letter.checked) return '';
-                if (letter.contained) return 'contains';
+                let css = '';
+                if (letter.animate) { // this will create the "sweep" effect
+                    css += 'animate ';
+                }
+                if (!letter.checked) return css;
+                if (letter.contained) return css + 'contains';
                 if (letter.typed === letter.confirmed) {
-                    let css = 'correct';
-                    if (letter.animate) { // this will create the "sweep" effect
-                        css += ' animate';
-                    }
-                    return css;
+                    return css + 'correct';
                 }
             },
             wordGuessed() {

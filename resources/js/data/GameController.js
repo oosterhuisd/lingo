@@ -19,6 +19,7 @@ class GameController {
         this.resultAnimator = new ResultAnimator();
 
         this.lingoWordsPlayed = 0;
+        this.finalRoundPlayed = false;
     }
 
     getActiveGame() {
@@ -38,9 +39,12 @@ class GameController {
 
     switchTeams(getBonusLetter) {
         this.activeTeam = (this.activeTeam == this.team1) ? this.team2 : this.team1;
+        Message.push("De beurt gaat naar " + this.activeTeam.name + ".");
         if (getBonusLetter === true && this.getActiveGame() instanceof Lingo) {
             if (this.lingoGame.getBonusLetter()) {
                 Message.push(this.activeTeam.name + " krijgt een bonusletter!");
+            } else {
+                Message.push("Jullie krijgen er geen bonusletter bij.");
             }
         }
     }
@@ -54,7 +58,17 @@ class GameController {
         this.getActiveGame().ballsDrawn = 0;
     }
 
-    newLingoRound(delay) {
+    getWinner() {
+        if (!this.isThereAWinner()) return null;
+        if (this.team1.score > this.team2.score) return this.team1;
+        return this.team2;
+    }
+
+    newLingoGame(delay) {
+        if (this.isThereAWinner()) {
+            Message.push(this.getWinner().name + " heeft gewonnen!!!", {duration: 30000});
+            return Promise.reject("Er is een winnaar");
+        }
         return Lingo.newGame(axios, this.currentRound, this.resultAnimator).then(game => {
             this.lingoGame = game;
             setTimeout(() => {
@@ -66,13 +80,18 @@ class GameController {
     setGameListeners() {
         document.addEventListener('LingoSuccess', evt => {
             Message.push("Dat is het goede woord!");
-            this.activeTeam.score += 25;
+            if (this.currentRound === 3) {
+                this.activeTeam.score += 50;
+                this.finalRoundPlayed = true;
+            } else {
+                this.activeTeam.score += 25;
+            }
             this.lingoWordsPlayed++;
             if (this.lingoWordsPlayed === 4) {
-                this.currentRound++; // go to 6 letter words
+                this.currentRound = 2; // go to 6 letter words
             }
             if (this.lingoWordsPlayed === 10) {
-                this.currentRound++; // go to 7 letter round
+                this.currentRound = 3; // go to the 7 letter tiebreak round
             }
             setTimeout(() => {
                 this.doPuzzleRound();
@@ -81,11 +100,11 @@ class GameController {
         document.addEventListener('LingoTurnCompleted', evt => {
             // this event is triggered when a lingo turn is completed without success
             if (this.lingoGame.isExtraAttempt) {
-                Message.push("Het maximaal aantal beurten is bereikt. De beurt gaat naar het " +
-                    "andere team!");
+                Message.push("Het maximaal aantal beurten is bereikt.");
             }
             if (this.lingoGame.lastResult.invalidWord
                   || this.lingoGame.lastResult.unknownWord
+                  || this.lingoGame.lastResult.timeout
                   || this.lingoGame.isExtraAttempt) {
                 this.switchTeams(true);
             } else if (this.currentRound === 3) {
@@ -96,7 +115,7 @@ class GameController {
         });
         document.addEventListener('LingoWordNotGuessed', evt => {
             Message.push("Geeft niks! We gaan gewoon verder met een nieuw woord.");
-            this.newLingoRound();
+            this.newLingoGame();
         });
         document.addEventListener('LingoTimeout', evt => {
             console.log("A Lingo timeout was caught");
@@ -111,7 +130,7 @@ class GameController {
         });
         document.addEventListener('RedBallDrawn', evt => {
             Message.push("Rukkie! Da's de rode bal!");
-            this.newLingoRound().then(()=> {
+            this.newLingoGame().then(()=> {
                 this.switchTeams();
             });
         });
@@ -131,31 +150,37 @@ class GameController {
                 Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn)
                     .then(game => this.puzzleGame2 = game);
             }
-            Message.push("De beurt gaat over naar het andere team.");
-            this.newLingoRound().then(() => { this.switchTeams(); });
+            this.newLingoGame().then(() => {
+                this.switchTeams();
+            });
         });
         document.addEventListener('PuzzleBadGuess', e => {
-            Message.push(e.detail.toUpperCase() + " is helaas niet het goede woord. De beurt gaat naar het andere team, dat begint met een nieuw woord.");
-            this.switchTeams();
-            this.newLingoRound();
+            Message.push(e.detail.toUpperCase() + " is helaas niet het goede woord.");
+            this.newLingoGame().then(() => {
+                this.switchTeams();
+            });
         });
         document.addEventListener('PuzzleTimeout', evt => {
-            this.newLingoRound();
+            this.newLingoGame();
         });
+    }
+
+    isThereAWinner() {
+        return this.finalRoundPlayed && this.team1.score !== this.team2.score;
     }
 
     async init() {
         this.team1 = {
             name: 'Team 1',
             score: 0,
-            players: ['P1', 'P2'],
+            players: ['Micha', 'Mama'],
             puzzlesCompleted: 0,
             greenBallsDrawn: 0
         };
         this.team2 = {
             name: 'Team 2',
             score: 0,
-            players: ['P3', 'P4'],
+            players: ['Loïs', 'Adiya'],
             puzzlesCompleted: 0,
             greenBallsDrawn: 0
         };
@@ -164,10 +189,13 @@ class GameController {
 
         // load games
         this.setGameListeners();
-        this.puzzleGame1 = await Puzzle.newGame(axios, 0, 0);
-        this.puzzleGame2 = await Puzzle.newGame(axios, 0, 0);
-
-        this.newLingoRound(0);
+        await Promise.all([
+            this.puzzleGame1 = await Puzzle.newGame(axios, 0, 0),
+            this.puzzleGame2 = await Puzzle.newGame(axios, 0, 0),
+            this.newLingoGame(0)
+        ]).then(() => {
+            console.log("Good to go!");
+        });
     }
 
 }

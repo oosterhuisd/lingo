@@ -13,6 +13,7 @@ class Lingo {
         this.completed = false;
         this.lastResult = {};
         this.currentAttempt = 0;
+        this.secondsPerTurn = props.secondsPerTurn;
         this.attempts = [
             this.newAttempt(),
             this.newAttempt(),
@@ -39,33 +40,42 @@ class Lingo {
         for (let l of currentAttempt) word += l.typed;
         let result = {};
         this.lastResult = {};
-        await axios.post('/api/lingo/validate/' + this.id, {
-            guess: word
-        }).then((response) => {
-            if (response.data.win) {
-                game.completed = true;
-                currentAttempt.forEach(l => { l.confirmed = l.typed });
-            } else {
-                for (let c of response.data.contains) {
-                    currentAttempt[c].contained = true;
+        if (word.trim() === '') { // TODO not correct
+            this.lastResult.timeout = true;
+        } else {
+            await axios.post('/api/lingo/validate/' + this.id, {
+                guess: word
+            }).then((response) => {
+                if (response.data.win) {
+                    game.completed = true;
+                    currentAttempt.forEach(l => {
+                        l.confirmed = l.typed
+                    });
+                } else {
+                    for (let c of response.data.contains) {
+                        currentAttempt[c].contained = true;
+                    }
+                    for (let c of response.data.correct) {
+                        currentAttempt[c].confirmed = currentAttempt[c].typed;
+                    }
                 }
-                for (let c of response.data.correct) {
-                    currentAttempt[c].confirmed = currentAttempt[c].typed;
+            }).catch((error) => {
+                if (error.response.data.invalidWord) {
+                    result.invalidWord = true;
+                    Message.push("Het woord is niet geldig");
+                } else {
+                    result.unknownWord = true;
+                    Message.push("Het woord staat niet in het woordenboek");
                 }
-            }
-        }).catch((error) => {
-            if (error.response.data.invalidWord) {
-                result.invalidWord = true;
-                Message.push("Het woord is niet geldig");
-            } else {
-                result.unknownWord = true;
-                Message.push("Het woord staat niet in het woordenboek");
-            }
-            this.lastResult = result;
-        });
+                this.lastResult = result;
+            });
+        }
 
         // now process the result
-        if (result.invalidWord || result.unknownWord) {
+        if (this.lastResult.timeout) {
+            console.log("TIMOUT!");
+            currentAttempt.forEach(l => { if (!l.confirmed) l.typed = ' ' });
+        } else if (result.invalidWord || result.unknownWord) {
             await this.resultAnimator.lingoAttemptFailed(currentAttempt);
             currentAttempt.forEach(l => { if (!l.confirmed) l.typed = '.' });
             this.currentAttempt--;
@@ -129,23 +139,23 @@ class Lingo {
 
     async getBonusLetter() {
         if (this.getCurrentAttempt().filter(l => l.confirmed).length >= this.wordLength - 1) {
-            console.log("Refusing to give the last letter");
             // never give away the last letter
-            return true;
+            return false;
         }
         let attempt = this.getCurrentAttempt();
-        let nextEmptyPosition;
+        let letter, nextEmptyPosition;
         for (let i = 0; i < this.wordLength; i++) {
-            if (!attempt[i].confirmed) {
+            letter = attempt[i];
+            if (!letter.confirmed) {
                 nextEmptyPosition = i;
                 break;
             }
         }
         if (nextEmptyPosition > 0) {
             let response = await axios.post('/api/lingo/getBonusLetter/' + this.id + '/' + nextEmptyPosition);
-            attempt[nextEmptyPosition].confirmed = response.data.letter;
-            attempt[nextEmptyPosition].typed = response.data.letter;
-            return true;
+            letter.confirmed = response.data.letter;
+            letter.typed = response.data.letter;
+            return await this.resultAnimator.bonusLetterReveal(attempt[nextEmptyPosition]);
         }
         return false;
     }
