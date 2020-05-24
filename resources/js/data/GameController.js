@@ -144,10 +144,10 @@ class GameController {
             this.activeTeam.puzzlesCompleted++;
             this.activeTeam.score += 100;
             if (this.activeTeam === this.team1) {
-                Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn)
+                Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn, this.resultAnimator)
                     .then(game => this.puzzleGame1 = game);
             } else {
-                Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn)
+                Puzzle.newGame(axios, this.activeTeam.puzzlesCompleted, this.activeTeam.greenBallsDrawn, this.resultAnimator)
                     .then(game => this.puzzleGame2 = game);
             }
             this.newLingoGame().then(() => {
@@ -190,8 +190,8 @@ class GameController {
         // load games
         this.setGameListeners();
         await Promise.all([
-            this.puzzleGame1 = await Puzzle.newGame(axios, 0, 0),
-            this.puzzleGame2 = await Puzzle.newGame(axios, 0, 0),
+            this.puzzleGame1 = await Puzzle.newGame(axios, 0, 0, this.resultAnimator),
+            this.puzzleGame2 = await Puzzle.newGame(axios, 0, 0, this.resultAnimator),
             this.newLingoGame(0)
         ]).then(() => {
             console.log("Good to go!");

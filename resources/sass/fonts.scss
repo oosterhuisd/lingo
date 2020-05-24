@@ -6,7 +6,7 @@ h1 {
 }
 .scoreboard {
     font-weight: bold;
-    color: $letter-tile-background;
+    color: $blue;
 }
 
 .letter {
@@ -33,6 +33,7 @@ h1 {
     &.contains > div {
         background: $letter-tile-background-contains;
         border-radius: 50%;
+        height: 100%;
     }
 
     .puzzle & {

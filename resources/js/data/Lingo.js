@@ -134,7 +134,6 @@ class Lingo {
         }
 
         let nextAttempt = this.getCurrentAttempt();
-        console.log(nextAttempt, lastAttempt);
         for (let i in lastAttempt) {
             nextAttempt[i].confirmed = lastAttempt[i].confirmed;
             nextAttempt[i].typed = nextAttempt[i].confirmed ? '' : '.';

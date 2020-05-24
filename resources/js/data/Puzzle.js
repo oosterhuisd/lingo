@@ -2,8 +2,9 @@ import Message from "./Message";
 
 class Puzzle {
 
-    constructor(props, greenBalls) {
+    constructor(props, greenBalls, animator) {
         this.id = props.id;
+        this.animator = animator;
         this.letters = props.letters;
         this.confirmedPositions = [];
         this.completed = false;
@@ -32,9 +33,11 @@ class Puzzle {
 
         if (ball === 'red') {
             document.dispatchEvent(new Event('RedBallDrawn'));
+            await this.animator.puzzleRedBallDrawn();
             return;
         } else if (ball === 'green') {
             document.dispatchEvent(new Event('GreenBallDrawn'));
+            await this.animator.puzzleGreenBallDrawn();
             return;
         }
         this.ballsDrawn++;
@@ -73,13 +76,13 @@ class Puzzle {
      * @param puzzlesCompleted
      * @returns {Promise<Puzzle>}
      */
-    static async newGame(axios, puzzlesCompleted, greenBallsDrawn) {
+    static async newGame(axios, puzzlesCompleted, greenBallsDrawn, animator) {
         let wordLength;
         if (puzzlesCompleted % 3 == 0) wordLength = 11;
         else if (puzzlesCompleted % 3 == 1) wordLength = 12;
         else if (puzzlesCompleted % 3 == 2) wordLength = 13;
         const response = await axios.get(`/api/puzzle/newWord/` + wordLength);
-        return new Puzzle(response.data, 2 - greenBallsDrawn);
+        return new Puzzle(response.data, 2 - greenBallsDrawn, animator);
     }
 
     async init(axios, wordLength) {

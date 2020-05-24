@@ -9,7 +9,6 @@
         </div>
         <div class="card-body h2 scoreboard text-center">€ {{ score }}</div>
         <div v-for="i in data.greenBallsDrawn" class="green-ball">
-
         </div>
     </div>
 </template>
@@ -53,11 +52,14 @@
     }
 </script>
 <style lang="scss" scoped>
+    @import "resources/sass/variables";
 .green-ball {
-    width: 1em;
-    height: 1em;
-    background-color: green;
+    width: 2em;
+    height: 2em;
+    background-color: $green;
     border-radius: 50%;
+    margin: 0.5em;
+    background: radial-gradient(circle at 10px 10px, $green, #222);
 }
 .card {
     transition: all 1s ease-in-out;

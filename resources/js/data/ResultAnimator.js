@@ -10,6 +10,8 @@ class ResultAnimator {
         this.lingoLetterWrong = new Sound('/media/sounds/lingo-letter-wrong.mp3');
         this.lingoBonusLetterReveal = new Sound('/media/sounds/lingo-bonus-letter-reveal.ogg');
         this.soundLingoWordGuessed = new Sound('/media/sounds/lingo-word-guessed.ogg');
+        this.soundGreenBall = new Sound('/media/sounds/green-ball.ogg');
+        this.soundRedBall = new Sound('/media/sounds/lingo-invalid-word.mp3');
     }
 
     async lingoAttemptFailed(attempt) {
@@ -96,6 +98,16 @@ class ResultAnimator {
             return new Promise((resolve, reject) => setTimeout(resolve, delay));
         });
         return promise;
+    }
+
+    async puzzleGreenBallDrawn() {
+        return this.soundGreenBall.play()
+            .then(() => new Promise(resolve => setTimeout(resolve, 1000)));
+    }
+
+    async puzzleRedBallDrawn() {
+        return this.soundRedBall.play()
+            .then(() => new Promise(resolve => setTimeout(resolve, 1000)));
     }
 
     delay(ms) {

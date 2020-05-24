@@ -40,7 +40,6 @@
             'game.attempts': {
                 deep: true,
                 handler(game) {
-                    console.log("Attempt changed");
                 }
             }
         },
