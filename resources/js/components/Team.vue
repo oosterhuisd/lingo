@@ -43,9 +43,7 @@
             }
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         mounted() {
         }
@@ -53,18 +51,22 @@
 </script>
 <style lang="scss" scoped>
     @import "resources/sass/variables";
-.green-ball {
-    width: 2em;
-    height: 2em;
-    background-color: $green;
-    border-radius: 50%;
-    margin: 0.5em;
-    background: radial-gradient(circle at 10px 10px, $green, #222);
-}
-.card {
-    transition: all 1s ease-in-out;
-    &.inactive {
 
+    .green-ball {
+        display: inline-block;
+        width: 2em;
+        height: 2em;
+        background-color: $green;
+        border-radius: 50%;
+        margin: 0.5em;
+        background: radial-gradient(circle at 10px 10px, $green, #222);
     }
-}
+
+    .card {
+        transition: all 1s ease-in-out;
+
+        &.inactive {
+
+        }
+    }
 </style>
