@@ -1,7 +1,6 @@
 <template>
     <div class="container-fluid p-5" v-if="this.initialized">
         <div class="row justify-content-center">
-
             <div class="col-md-8">
                 <lingo-board v-if="doLingo"
                              :game="gameController.lingoGame"
@@ -22,7 +21,7 @@
                 <team :name="'Team 1'" :data="gameController.team1" :isPlaying="team1Active"></team>
             </div>
             <div class="col-md-6">
-                <img src="/media/images/jan.svg" class="host" title="" alt="Host" />
+                <img src="/media/images/jan.svg" class="host" title="" alt="Host" :class="hostIsTalking"/>
             </div>
             <div class="col-md-2">
                 <team :name="'Team 2'" :data="gameController.team2" :isPlaying="team2Active"></team>
@@ -71,6 +70,9 @@
             },
             doLingo() {
                 return this.gameController.gamePhase == 'lingo' && !this.loading;
+            },
+            hostIsTalking() {
+                return Message.isOpen === true ? 'talking' : '';
             }
         },
         methods: {
@@ -135,7 +137,12 @@
         height: 100vh;
     }
     img.host {
+        /*max-width: 150px;*/
+        /*max-height: 100px;*/
         max-width: 300px;
         max-height: 200px;
+        transition: all 1s ease-in-out;
+        &.talking {
+        }
     }
 </style>

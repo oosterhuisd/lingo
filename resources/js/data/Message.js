@@ -7,7 +7,9 @@ class Message {
             keepOnHover: true,
             theme: 'bubble',
             iconPack: 'fontawesome',
+            onComplete: Message.isOpen = false
         };
+        Message.isOpen = true;
         Vue.toasted.show(message, {...defaults, ...options});
     }
 

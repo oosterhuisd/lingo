@@ -11,12 +11,11 @@ h1 {
 
 .letter {
     margin: 1px 1px 0 0;
-    width: 90px;
-    height: 90px;
+    width: $tile-size;
+    height: $tile-size;
+    font-size: $tile-font-size;
     overflow: hidden;
     font-family: 'Heebo', sans-serif;
-    font-size: 60px;
-    line-height: 96px;
     text-align: center;
     font-weight: bold;
     text-transform: uppercase;
