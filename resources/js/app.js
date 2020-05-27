@@ -8,6 +8,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
 import Toasted from 'vue-toasted';
 Vue.use(Toasted);
 
@@ -28,14 +31,23 @@ Vue.component('lingo-board', require('./components/LingoBoard.vue').default);
 Vue.component('puzzle-word', require('./components/PuzzleWord.vue').default);
 Vue.component('bingo-card', require('./components/BingoCard.vue').default);
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+// create store
+const store = new Vuex.Store({
+    state: {
+        currentGame: '',
+        loading: false
+    },
+    mutations: {
+        changeGame(toGame) {
+            state.currentGame = toGame;
+        },
+    }
+})
 
+// initialize Vue app
 const app = new Vue({
     el: '#app',
+    store: store
 });
 
 String.prototype.replaceAt = function(index, replacement) {

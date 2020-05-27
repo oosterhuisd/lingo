@@ -78,7 +78,6 @@
             submit: async function () {
                 let result = await this.game.verifyCurrentAttempt(axios);
                 if (result.invalidWord || result.unknownWord) {
-                    Message.push("De beurt gaat naar het andere team");
                     this.invalidWord();
                 }
                 this.cursorAt = 0;

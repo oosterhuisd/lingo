@@ -36,8 +36,7 @@ class Lingo {
     async verifyCurrentAttempt(axios) {
         let game = this;
         let currentAttempt = this.getCurrentAttempt();
-        let word = '';
-        for (let l of currentAttempt) word += l.typed;
+        let word = currentAttempt.map(l => l.get()).join('');
         let result = {};
         this.lastResult = {};
 

@@ -2,6 +2,7 @@ import Lingo from "./Lingo";
 import Puzzle from "./Puzzle";
 import Message from "./Message";
 import ResultAnimator from "./ResultAnimator";
+import Team from "./Team";
 
 let transitionDelay = 0;
 
@@ -170,20 +171,9 @@ class GameController {
     }
 
     async init() {
-        this.team1 = {
-            name: 'Team 1',
-            score: 0,
-            players: ['Micha', 'Mama'],
-            puzzlesCompleted: 0,
-            greenBallsDrawn: 0
-        };
-        this.team2 = {
-            name: 'Team 2',
-            score: 0,
-            players: ['Loïs', 'Adiya'],
-            puzzlesCompleted: 0,
-            greenBallsDrawn: 0
-        };
+        this.team1 = new Team('Team 1', 'p1', 'p2');
+        this.team2 = new Team('Team 2', 'p3', 'p4');
+
         this.currentRound = 1;
         this.activeTeam = this.team1;
 

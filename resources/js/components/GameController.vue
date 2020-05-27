@@ -73,7 +73,7 @@
             },
             hostIsTalking() {
                 return Message.isOpen === true ? 'talking' : '';
-            }
+            },
         },
         methods: {
             puzzleWordNotGuessed() {
