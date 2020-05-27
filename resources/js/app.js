@@ -6,6 +6,7 @@
 
 require('./bootstrap');
 
+window.gsap = require('gsap');
 window.Vue = require('vue');
 
 import Toasted from 'vue-toasted';

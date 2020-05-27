@@ -1,5 +1,5 @@
 <template>
-    <div class="lingo-board">
+    <div class="lingo-board" ref="lingo_board">
 <!--        <div class="debug">-->
 <!--            <button class="btn btn-primary" @click="wordGuessed">-->
 <!--                Woord is geraden-->
@@ -23,6 +23,7 @@
     import Lingo from "../data/Lingo";
     import keyEventsMixin from "../mixins/keyEventsMixin";
     import Message from "../data/Message";
+    import { gsap } from "gsap";
 
     export default {
         mixins: [keyEventsMixin],
@@ -95,6 +96,14 @@
             }
         },
         mounted() {
+            const letters = document.getElementsByClassName('letter');
+            gsap.from(letters, 1, {
+                scale: 0.5,
+                opacity: 0,
+                stagger: 0.05,
+                ease: "back",
+                force3D: true
+            });
         }
     }
 </script>

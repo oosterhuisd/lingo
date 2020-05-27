@@ -1,4 +1,5 @@
 import Sound from "./Sound";
+import {gsap} from "gsap";
 
 class ResultAnimator {
 
@@ -52,14 +53,19 @@ class ResultAnimator {
         let timeToEnjoyTheMoment = 1000;
         let promise = Promise.resolve();
 
+        const letters = document.getElementsByClassName('letter');
         for (let i=0; i < 2; i++) { // flip twice
             this.soundLingoWordGuessed.play();
-            for (let letter of attempt) { /* @var LingoLetter letter */
-                promise = promise.then(() => {
-                    letter.animate = !letter.animate;
-                    return new Promise((resolve, reject) => setTimeout(resolve, sweepDelay));
-                });
-            }
+            gsap.to(attempt, 0.2, {
+                rotateY: 360,
+                stagger: 0.1,
+            });
+            // for (let letter of attempt) { /* @var LingoLetter letter */
+            //     promise = promise.then(() => {
+            //         letter.animate = !letter.animate;
+            //         return new Promise((resolve, reject) => setTimeout(resolve, sweepDelay));
+            //     });
+            // }
         }
 
         // after the animation, wait a while

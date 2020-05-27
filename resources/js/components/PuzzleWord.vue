@@ -28,6 +28,7 @@
 <script>
     import Puzzle from "../data/Puzzle";
     import keyEventsMixin from "../mixins/keyEventsMixin";
+    import { gsap } from "gsap";
 
     export default {
         mixins: [keyEventsMixin],
@@ -67,15 +68,29 @@
             }
         },
         mounted() {
-            console.debug('Puzzle component mounted.')
+            const letters = document.getElementsByClassName('letter');
+            gsap.from(letters, 1, {
+                scale: 0.5,
+                opacity: 0,
+                stagger: 0.05,
+                ease: "back",
+                force3D: true
+            });
         }
     }
 </script>
 <style lang="scss" scoped>
 .letter {
+    position: relative;
     width: 65px;
     height: 65px;
     font-size: 45px;
     line-height: 65px;
+    transition: transform 0.3s;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    &.animate {
+        transform: rotateY(360deg);
+    }
 }
 </style>

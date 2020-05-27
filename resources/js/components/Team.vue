@@ -59,7 +59,7 @@
         background-color: $green;
         border-radius: 50%;
         margin: 0.5em;
-        background: radial-gradient(circle at 10px 10px, $green, #222);
+        background: radial-gradient(circle at 10px 10px, $green, #555);
     }
 
     .card {
