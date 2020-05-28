@@ -9,6 +9,7 @@ class Puzzle {
         this.confirmedPositions = [];
         this.completed = false;
         this.balls = ['red','red'];
+        this.time = 0;
         for (let i=0; i < greenBalls; i++) this.balls.push('green');
         for (let l of this.letters) this.balls.push(l);
 
@@ -67,6 +68,7 @@ class Puzzle {
 
     timeOut() {
         document.dispatchEvent(new Event('PuzzleTimeout'));
+        this.animator.puzzleRedBallDrawn();
     }
 
     /**

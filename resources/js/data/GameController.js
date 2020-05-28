@@ -56,6 +56,19 @@ class GameController {
     doPuzzleRound() {
         this.gamePhase = 'puzzle';
         this.getActiveGame().ballsDrawn = 0;
+        this.getActiveGame().time = 10;
+        setTimeout(this.nextGamePhase, 10000);
+    }
+
+    nextGamePhase() {
+        if (this.gamePhase === 'lingo') {
+            this.gamePhase = 'puzzle';
+        } else if (this.gamePhase === 'puzzle' && this.round === 3) {
+            this.round++;
+            this.gamePhase = 'final1';
+        } else if (this.gamePhase === 'puzzle') {
+            this.gamePhase = 'lingo';
+        }
     }
 
     getWinner() {

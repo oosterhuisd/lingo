@@ -20,7 +20,8 @@
                 </div>
             </div>
         </div>
-        <input placeholder="Typ hier je poging" type="text" class="form-control form-control-lg" v-model="guess" autofocus />
+        <input @keydown="setTypingTimer" placeholder="Typ hier je poging" type="text" class="form-control form-control-lg" v-model="guess" autofocus />
+        <h1>{{ timer }}</h1>
 
     </div>
 </template>
@@ -41,15 +42,40 @@
         },
         data() {
             return {
-                guess: ''
+                guess: '',
+                timeRemaining: 0
+            }
+        },
+        watch: {
+            timeRemaining: {
+                handler(value) {
+                    if (value > 0) {
+                        setTimeout(()=>{
+                            this.timeRemaining--;
+                        }, 100);
+                    } else if (value !== false) {
+                        this.game.timeOut();
+                    }
+                },
+                // immediate: true
             }
         },
         computed: {
             canDraw() {
                 return this.game.ballsToDraw() > 0;
+            },
+            timer() {
+                if (this.timeRemaining === false) {
+                    return '-';
+                } else {
+                    return Number.parseFloat(this.timeRemaining / 10).toFixed(1);
+                }
             }
         },
         methods: {
+            setTypingTimer() {
+                this.timeRemaining += 10;
+            },
             getClass(i) {
                 if (this.game.confirmedPositions.includes(i)) {
                     return 'correct';
@@ -63,9 +89,10 @@
                 this.game.timeOut();
             },
             async submit() {
+                this.timeRemaining = false; // stops the timer
                 await this.game.verify(axios, this.guess);
                 this.guess = '';
-            }
+            },
         },
         mounted() {
             const letters = document.getElementsByClassName('letter');
@@ -76,6 +103,7 @@
                 ease: "back",
                 force3D: true
             });
+            this.timeRemaining = this.game.time*10;
         }
     }
 </script>
