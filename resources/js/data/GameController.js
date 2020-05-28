@@ -186,14 +186,14 @@ class GameController {
         this.team1 = {
             name: 'Team 1',
             score: 0,
-            players: ['Micha', 'Mama'],
+            players: ['P1', 'P2'],
             puzzlesCompleted: 0,
             greenBallsDrawn: 0
         };
         this.team2 = {
             name: 'Team 2',
             score: 0,
-            players: ['Loïs', 'Adiya'],
+            players: ['P3', 'P4'],
             puzzlesCompleted: 0,
             greenBallsDrawn: 0
         };

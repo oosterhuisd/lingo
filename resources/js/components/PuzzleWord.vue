@@ -8,9 +8,9 @@
                     <button class="btn btn-lg btn-primary" @click="drawBall" :disabled="!canDraw">
                         Pak een bal
                     </button>
-                    <button class="btn btn-lg btn-danger" @click="giveUp">
-                        Ik geef het op
-                    </button>
+<!--                    <button class="btn btn-lg btn-danger" @click="giveUp">-->
+<!--                        Ik geef het op-->
+<!--                    </button>-->
                 </div>
             </div>
 
@@ -43,21 +43,29 @@
         data() {
             return {
                 guess: '',
-                timeRemaining: 0
+                timeRemaining: 0,
+                pauseTimer: false
             }
         },
         watch: {
             timeRemaining: {
                 handler(value) {
-                    if (value > 0) {
+                    if (!this.pauseTimer && value > 0) {
                         setTimeout(()=>{
                             this.timeRemaining--;
                         }, 100);
-                    } else if (value !== false) {
+                    } else if (value <= 0) {
                         this.game.timeOut();
                     }
                 },
                 // immediate: true
+            },
+            pauseTimer: {
+                handler(pause) {
+                    if (pause === false) {
+                        this.timeRemaining--;
+                    }
+                }
             }
         },
         computed: {
@@ -82,8 +90,10 @@
                 }
                 return 'contains';
             },
-            drawBall() {
-                this.game.drawBall(axios);
+            async drawBall() {
+                this.pauseTimer = true;
+                await this.game.drawBall(axios);
+                this.pauseTimer = false;
             },
             giveUp() {
                 this.game.timeOut();

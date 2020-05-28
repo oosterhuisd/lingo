@@ -1,5 +1,7 @@
 import Sound from "./Sound";
 import {gsap} from "gsap";
+import {CSSPlugin} from "gsap/CSSPlugin";
+gsap.registerPlugin(CSSPlugin);
 
 class ResultAnimator {
 
@@ -53,12 +55,13 @@ class ResultAnimator {
         let timeToEnjoyTheMoment = 1000;
         let promise = Promise.resolve();
 
-        const letters = document.getElementsByClassName('letter');
+        // const letters = document.getElementsByClassName('letter');
+        this.soundLingoWordGuessed.play();
         for (let i=0; i < 2; i++) { // flip twice
-            this.soundLingoWordGuessed.play();
-            gsap.to(attempt, 0.2, {
-                rotateY: 360,
+            await gsap.to('.word.active .letter', {
+                rotationY: 360,
                 stagger: 0.1,
+                transformStyle: 'preserve-3d'
             });
             // for (let letter of attempt) { /* @var LingoLetter letter */
             //     promise = promise.then(() => {

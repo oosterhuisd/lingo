@@ -10,7 +10,7 @@
 <!--        </div>-->
 
         <div class="attempts" :class="orientation">
-            <div v-for="attempt in game.attempts" class="d-flex justify-content-center word">
+            <div v-for="attempt in game.attempts" class="d-flex justify-content-center word" :class="getAttemptClass(attempt)">
                 <div v-for="(letter, index) in attempt" class="letter" :class="getClass(letter)">
                     <div class="face front">{{ letter.get() }}</div>
                 </div>
@@ -50,8 +50,15 @@
             }
         },
         computed: {
+
         },
         methods: {
+            getAttemptClass(attempt) {
+                if( attempt === this.game.getCurrentAttempt()) {
+                    return 'active';
+                }
+                return '';
+            },
             getClass(letter) {
                 let css = '';
                 if (letter.animate) { // this will create the "sweep" effect
