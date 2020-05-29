@@ -54,22 +54,21 @@
             gameController: {
                 deep: true,
                 handler(game) {
-                    console.debug("A game updated was detected");
                 }
             }
         },
         computed: {
             team1Active() {
-                return this.gameController.activeTeam == this.gameController.team1;
+                return this.gameController.activeTeam === this.gameController.team1;
             },
             team2Active() {
-                return this.gameController.activeTeam == this.gameController.team2;
+                return this.gameController.activeTeam === this.gameController.team2;
             },
             puzzleInstance() {
                 return this.gameController.getActiveGame();
             },
             doLingo() {
-                return this.gameController.gamePhase == 'lingo' && !this.loading;
+                return this.gameController.gamePhase === 'lingo' && !this.loading;
             },
             hostIsTalking() {
                 return Message.isOpen === true ? 'talking' : '';
@@ -81,11 +80,11 @@
                 Message.push("Puzzle word was not guessed by " + this.activeTeam)
             },
             getActiveGameElement() {
-                if (this.gameController.gamePhase == 'lingo') {
+                if (this.gameController.gamePhase === 'lingo') {
                     return this.$refs.lingo;
-                } else if (this.gameController.gamePhase == 'puzzle') {
+                } else if (this.gameController.gamePhase === 'puzzle') {
                     return this.$refs.puzzle;
-                } else if (this.gameController.gamePhase == 'bingo') {
+                } else if (this.gameController.gamePhase === 'bingo') {
 
                 } else {
                     // set user names etc

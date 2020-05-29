@@ -51,28 +51,18 @@ class ResultAnimator {
      * @returns {Promise<void>}
      */
     async lingoWordGuessed(attempt) {
-        let sweepDelay = 200;
         let timeToEnjoyTheMoment = 1000;
         let promise = Promise.resolve();
 
         // const letters = document.getElementsByClassName('letter');
         this.soundLingoWordGuessed.play();
-        for (let i=0; i < 2; i++) { // flip twice
-            await gsap.to('.word.active .letter', {
-                rotationY: 360,
-                stagger: 0.1,
-                transformStyle: 'preserve-3d'
-            });
-            // for (let letter of attempt) { /* @var LingoLetter letter */
-            //     promise = promise.then(() => {
-            //         letter.animate = !letter.animate;
-            //         return new Promise((resolve, reject) => setTimeout(resolve, sweepDelay));
-            //     });
-            // }
-        }
-
-        // after the animation, wait a while
-        promise = promise.then(() => this.delay(timeToEnjoyTheMoment));
+        await gsap.to('.word.active .letter', {
+            duration: 1,
+            rotationY: 360,
+            stagger: 0.1,
+            transformStyle: 'preserve-3d',
+            repeat: 2
+        }).then(() => this.delay(timeToEnjoyTheMoment));
 
         return promise;
     }

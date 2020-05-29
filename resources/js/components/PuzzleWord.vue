@@ -1,16 +1,13 @@
 <template>
-    <div class="card puzzle">
-        <div class="card-header">Puzzelwoord</div>
+    <div class="puzzle">
+        <h1>Puzzelwoord</h1>
 
-        <div class="card-body">
+        <div class="col-10">
             <div class="mb-5">
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-lg btn-primary" @click="drawBall" :disabled="!canDraw">
                         Pak een bal
                     </button>
-<!--                    <button class="btn btn-lg btn-danger" @click="giveUp">-->
-<!--                        Ik geef het op-->
-<!--                    </button>-->
                 </div>
             </div>
 
@@ -19,9 +16,15 @@
                     <div>{{ letter }}</div>
                 </div>
             </div>
+
+            <div class="d-flex justify-content-center word guess">
+                <div v-for="(letter, index) in guess" :key="index" class="letter">
+                    <div>{{ letter }}</div>
+                </div>
+            </div>
         </div>
-        <input @keydown="setTypingTimer" placeholder="Typ hier je poging" type="text" class="form-control form-control-lg" v-model="guess" autofocus />
-        <h1>{{ timer }}</h1>
+
+        <h1 class="text-muted">{{ timer }}</h1>
 
     </div>
 </template>
@@ -44,7 +47,8 @@
             return {
                 guess: '',
                 timeRemaining: 0,
-                pauseTimer: false
+                pauseTimer: true,
+                acceptInput: false
             }
         },
         watch: {
@@ -82,7 +86,8 @@
         },
         methods: {
             setTypingTimer() {
-                this.timeRemaining += 10;
+                this.pauseTimer = true;
+                setTimeout(() => this.pauseTimer = false, 7000);
             },
             getClass(i) {
                 if (this.game.confirmedPositions.includes(i)) {
@@ -99,12 +104,25 @@
                 this.game.timeOut();
             },
             async submit() {
-                this.timeRemaining = false; // stops the timer
+                this.pauseTimer = true;
                 await this.game.verify(axios, this.guess);
-                this.guess = '';
             },
+            input: function (letter) {
+                if (!this.acceptInput) return false;
+                this.guess += letter;
+            },
+            backspace: function () {
+                if (this.guess.length === 0) return false;
+                this.guess = this.guess.slice(0, -1);
+            },
+            start() {
+                this.timeRemaining = this.game.time*10;
+                this.pauseTimer = false;
+                this.acceptInput = true;
+            }
         },
         mounted() {
+            this.guess = '';
             const letters = document.getElementsByClassName('letter');
             gsap.from(letters, 1, {
                 scale: 0.5,
@@ -112,8 +130,8 @@
                 stagger: 0.05,
                 ease: "back",
                 force3D: true
-            });
-            this.timeRemaining = this.game.time*10;
+            }).then(this.start);
+
         }
     }
 </script>

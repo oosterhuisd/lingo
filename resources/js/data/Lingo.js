@@ -37,7 +37,7 @@ class Lingo {
         let game = this;
         let currentAttempt = this.getCurrentAttempt();
         let word = '';
-        for (let l of currentAttempt) word += l.typed;
+        for (let l of currentAttempt) word += l.get();
         let result = {};
         this.lastResult = {};
 

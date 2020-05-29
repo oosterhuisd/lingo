@@ -8,7 +8,8 @@
             <div>{{ player1 }} en {{ player2 }}</div>
         </div>
         <div class="card-body h2 scoreboard text-center">€ {{ score }}</div>
-        <div v-for="i in data.greenBallsDrawn" class="green-ball">
+        <div class="d-flex align-content-end">
+            <div v-for="i in data.greenBallsDrawn" class="green-ball"></div>
         </div>
     </div>
 </template>
@@ -53,7 +54,6 @@
     @import "resources/sass/variables";
 
     .green-ball {
-        display: inline-block;
         width: 2em;
         height: 2em;
         background-color: $green;
