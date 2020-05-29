@@ -46,7 +46,8 @@
         },
         data() {
             return {
-                cursorAt: 0
+                cursorAt: 0,
+                acceptInput: false
             }
         },
         computed: {
@@ -84,14 +85,17 @@
                 this.game.undo();
             },
             submit: async function () {
+                this.acceptInput = false;
                 let result = await this.game.verifyCurrentAttempt(axios);
                 if (result.invalidWord || result.unknownWord) {
                     Message.push("De beurt gaat naar het andere team");
                     this.invalidWord();
                 }
+                this.acceptInput = true;
                 this.cursorAt = 0;
             },
             input: function (letter) {
+                if (!this.acceptInput) return false;
                 if (this.game.setChar(this.cursorAt, letter)) {
                     this.cursorAt++;
                 }
@@ -110,7 +114,7 @@
                 stagger: 0.05,
                 ease: "back",
                 force3D: true
-            });
+            }).then(() => this.acceptInput = true);
         }
     }
 </script>

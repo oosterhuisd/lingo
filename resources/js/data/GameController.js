@@ -56,7 +56,7 @@ class GameController {
     doPuzzleRound() {
         this.gamePhase = 'puzzle';
         this.getActiveGame().ballsDrawn = 0;
-        this.getActiveGame().time = 10;
+        this.getActiveGame().time = 20;
         setTimeout(this.nextGamePhase, 10000);
     }
 
