@@ -23,11 +23,11 @@ h1 {
     color: $letter-tile-font-color;
     border-radius: 5px;
     box-shadow: $letter-tile-shadow;
-    -webkit-text-stroke: 1px darken($letter-tile-background, 10%);
+    text-stroke: 1px darken($letter-tile-background, 10%);
     &.correct {
         background: $letter-tile-background-correct;
         box-shadow: $letter-tile-correct-shadow;
-        -webkit-text-stroke: 1px darken($letter-tile-background-correct, 10%);
+        text-stroke: 1px darken($letter-tile-background-correct, 10%);
     }
     &.contains > div {
         background: $letter-tile-background-contains;
